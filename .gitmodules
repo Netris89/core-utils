@@ -1,0 +1,9 @@
+[submodule "cp"]
+	path = cp
+	url = https://github.com/Netris89/cp
+[submodule "mv"]
+	path = mv
+	url = https://github.com/Netris89/mv
+[submodule "ls"]
+	path = ls
+	url = https://github.com/Netris89/ls
