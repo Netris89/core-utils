@@ -7,3 +7,6 @@
 [submodule "ls"]
 	path = ls
 	url = https://github.com/Netris89/ls
+[submodule "echo"]
+	path = echo
+	url = https://github.com/Netris89/echo
