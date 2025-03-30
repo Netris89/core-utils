@@ -10,3 +10,6 @@
 [submodule "echo"]
 	path = echo
 	url = https://github.com/Netris89/echo
+[submodule "cat"]
+	path = cat
+	url = https://github.com/Netris89/cat
