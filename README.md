@@ -17,11 +17,11 @@ This project is a C++ implementation of classic UNIX utilities, designed to adhe
 - Easy to build and extend.
 
 # Build Instructions
+> [!IMPORTANT]
+> Requirements: CMake 3.10+, a C++17-compliant compiler (e.g., GCC 8+, Clang 7+).
 ```sh
 mkdir build
 cd build
 cmake ..
 make
 ```
-> [!IMPORTANT]
-> Requirements: CMake 3.10+, a C++17-compliant compiler (e.g., GCC 8+, Clang 7+).
