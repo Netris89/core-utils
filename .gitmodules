@@ -19,3 +19,6 @@
 [submodule "true"]
 	path = true
 	url = https://github.com/Netris89/true
+[submodule "date"]
+	path = date
+	url = https://github.com/Netris89/date
