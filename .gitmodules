@@ -13,3 +13,9 @@
 [submodule "cat"]
 	path = cat
 	url = https://github.com/Netris89/cat
+[submodule "false"]
+	path = false
+	url = https://github.com/Netris89/false
+[submodule "true"]
+	path = true
+	url = https://github.com/Netris89/true
