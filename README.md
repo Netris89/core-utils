@@ -20,8 +20,13 @@ This project is a C++ implementation of classic UNIX utilities, designed to adhe
 > [!IMPORTANT]
 > Requirements: CMake 3.10+, a C++17-compliant compiler (e.g., GCC 8+, Clang 7+).
 ```sh
+git clone https://github.com/Netris89/Utilities --recurse-submodules
+cd Utilities
 mkdir build
 cd build
 cmake ..
-make
+cmake --build .
 ```
+>[!TIP]
+> All executables will be generated inside build/bin/.
+> For example, you can run ./build/bin/echo to use the echo utility.
