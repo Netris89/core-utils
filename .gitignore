@@ -15,3 +15,4 @@ CMakeUserPresets.json
 .ninja_log
 
 build
+.cache
