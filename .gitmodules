@@ -10,16 +10,3 @@
 [submodule "true"]
 	path = true
 	url = https://github.com/Netris89/true
-
-# [submodule "cat"]
-	path = cat
-	url = https://github.com/Netris89/cat  
-# [submodule "cp"]
-	path = cp
-	url = https://github.com/Netris89/cp  
-# [submodule "ls"]
-	path = ls
-	url = https://github.com/Netris89/ls  
-# [submodule "mv"]
-	path = mv
-	url = https://github.com/Netris89/mv  
