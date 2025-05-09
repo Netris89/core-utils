@@ -1,18 +1,18 @@
-[submodule "cp"]
+# [submodule "cp"]
 	path = cp
-	url = https://github.com/Netris89/cp
-[submodule "mv"]
+	url = https://github.com/Netris89/cp  
+# [submodule "mv"]
 	path = mv
-	url = https://github.com/Netris89/mv
-[submodule "ls"]
+	url = https://github.com/Netris89/mv  
+# [submodule "ls"]
 	path = ls
-	url = https://github.com/Netris89/ls
+	url = https://github.com/Netris89/ls  
 [submodule "echo"]
 	path = echo
 	url = https://github.com/Netris89/echo
-[submodule "cat"]
+# [submodule "cat"]
 	path = cat
-	url = https://github.com/Netris89/cat
+	url = https://github.com/Netris89/cat  
 [submodule "false"]
 	path = false
 	url = https://github.com/Netris89/false
