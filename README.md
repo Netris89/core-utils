@@ -1,5 +1,4 @@
-# Unix Utilities in C++ (POSIX-Compliant)
-## Overview
+# Overview
 
 This project is a C++ implementation of classic UNIX utilities, designed to adhere strictly to the POSIX standard. Each utility aims to behave as closely as possible to its traditional counterpart, ensuring compatibility, predictability, and portability across UNIX-like systems.
 
@@ -20,8 +19,8 @@ This project is a C++ implementation of classic UNIX utilities, designed to adhe
 > [!IMPORTANT]
 > Requirements: CMake 3.10+, a C++20-compliant compiler (e.g., GCC 10+, Clang 9+).
 ```sh
-git clone https://github.com/Netris89/Utilities --recurse-submodules
-cd Utilities
+git clone https://github.com/Netris89/core-utils --recurse-submodules
+cd core-utils
 mkdir build
 cd build
 cmake ..
