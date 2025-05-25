@@ -10,3 +10,5 @@
 [submodule "true"]
 	path = true
 	url = https://github.com/Netris89/true
+[submodule "sleep"]
+	path = sleep
