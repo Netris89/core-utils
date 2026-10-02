@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_subdirectory(echo)
-add_subdirectory(true)
-add_subdirectory(false)
-add_subdirectory(date)
+add_subdirectory(source/echo)
+add_subdirectory(source/date)
+add_subdirectory(source/sleep)
+add_subdirectory(source/true)
+add_subdirectory(source/false)
