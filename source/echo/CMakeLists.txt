@@ -30,16 +30,16 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 # Create the test executable for parser tests
-add_executable(testParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
+add_executable(echoTestParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
 
 # Add parser.cpp directly to the test executable
-target_sources(testParser PRIVATE ${PROJECT_SOURCE_DIR}/source/parser.cpp)
+target_sources(echoTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/parser.cpp)
 
 # Set the output directory for the test executable
-set_target_properties(testParser PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+set_target_properties(echoTestParser PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Link the test executable with GoogleTest libraries
-target_link_libraries(testParser PRIVATE GTest::GTest GTest::Main)
+target_link_libraries(echoTestParser PRIVATE GTest::GTest GTest::Main)
 
 # Automatically discover tests from the test executable (requires gtest_main)
-gtest_discover_tests(testParser)
+gtest_discover_tests(echoTestParser)

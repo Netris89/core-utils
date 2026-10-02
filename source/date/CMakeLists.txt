@@ -30,20 +30,20 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 # Create the test executable for parser tests
-add_executable(testParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
+add_executable(dateTestParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
 
 # Add parser.cpp, clock.cpp & clockInterface.hpp directly to the test executable
-target_sources(testParser PRIVATE
+target_sources(dateTestParser PRIVATE
     ${PROJECT_SOURCE_DIR}/source/parser.cpp
     ${PROJECT_SOURCE_DIR}/source/clock.cpp
     ${PROJECT_SOURCE_DIR}/include/clockInterface.hpp
 )
 
 # Set the output directory for the test executable
-set_target_properties(testParser PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+set_target_properties(dateTestParser PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Link the test executable with GoogleTest libraries
-target_link_libraries(testParser PRIVATE
+target_link_libraries(dateTestParser PRIVATE
     GTest::gtest
     GTest::gtest_main
     GTest::gmock
@@ -51,4 +51,4 @@ target_link_libraries(testParser PRIVATE
 )
 
 # Automatically discover tests from the test executable (requires gtest_main)
-gtest_discover_tests(testParser)
+gtest_discover_tests(dateTestParser)
