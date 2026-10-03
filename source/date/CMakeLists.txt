@@ -4,9 +4,6 @@ cmake_minimum_required(VERSION 3.28)
 # Define the project name
 project(date)
 
-# Include CTest module to enable testing functionality
-include(CTest)
-
 # Set the C++ standard to C++20 and enforce it
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -19,9 +16,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Create the executable target for your main program
 add_executable(date ${SOURCES})
-
-# Enable testing in the project
-enable_testing()
 
 # Find the GoogleTest package (required for tests)
 find_package(GTest REQUIRED)
