@@ -1,6 +1,3 @@
-# Set the path to the Vcpkg toolchain file
-set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-
 # Specify the minimum required version of CMake
 cmake_minimum_required(VERSION 3.28)
 
@@ -35,11 +32,8 @@ add_executable(echoTestParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
 # Add parser.cpp directly to the test executable
 target_sources(echoTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/parser.cpp)
 
-# Set the output directory for the test executable
-set_target_properties(echoTestParser PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
-
 # Link the test executable with GoogleTest libraries
-target_link_libraries(echoTestParser PRIVATE GTest::GTest GTest::Main)
+target_link_libraries(echoTestParser PRIVATE GTest::gtest GTest::gtest_main)
 
 # Automatically discover tests from the test executable (requires gtest_main)
 gtest_discover_tests(echoTestParser)
