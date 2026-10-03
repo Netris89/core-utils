@@ -90,7 +90,7 @@ auto main(int argc, char* argv[]) -> int
     // If formattedDate is empty, no formatting argument has been passed so the whole date shall be printed
     if (formattedDate.empty())
     {
-        string arg    = "+%a %b %e %H:%M:%S %Z %Y";
+        string arg    = "+%a %e %b %Y %H:%M:%S %Z";
         formattedDate = Parser::ParseFormat(arg, clock);
     }
 
