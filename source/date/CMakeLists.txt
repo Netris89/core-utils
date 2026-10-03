@@ -1,6 +1,3 @@
-# Set the path to the Vcpkg toolchain file
-set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-
 # Specify the minimum required version of CMake
 cmake_minimum_required(VERSION 3.28)
 
@@ -38,9 +35,6 @@ target_sources(dateTestParser PRIVATE
     ${PROJECT_SOURCE_DIR}/source/clock.cpp
     ${PROJECT_SOURCE_DIR}/include/clockInterface.hpp
 )
-
-# Set the output directory for the test executable
-set_target_properties(dateTestParser PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Link the test executable with GoogleTest libraries
 target_link_libraries(dateTestParser PRIVATE
