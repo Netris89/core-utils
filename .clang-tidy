@@ -2,6 +2,7 @@ Checks: "clang-diagnostic-*,\
 clang-analyzer-*,\
 cppcoreguidelines-*,\
 google-*,\
+-google-readability-todo,\
 modernize-*,\
 misc-*,\
 readability-*,\
