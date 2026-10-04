@@ -47,7 +47,7 @@ enum class Month : std::uint8_t
     September = 8,
     October   = 9,
     November  = 10,
-    December  = 11
+    December  = 11,
 };
 
 /**
@@ -61,8 +61,19 @@ enum class Month : std::uint8_t
 inline auto getShortMonthName(int month) -> std::string_view
 {
     static constexpr std::array<std::string_view, 12> shortNames = {
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    };
 
     return shortNames.at(month);
 }
@@ -78,8 +89,19 @@ inline auto getShortMonthName(int month) -> std::string_view
 inline auto getLongMonthName(int month) -> std::string_view
 {
     static constexpr std::array<std::string_view, 12> longNames = {
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"};
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    };
 
     return longNames.at(month);
 }

@@ -23,7 +23,6 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/date.html
  */
 
-#include <cstdlib>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
@@ -109,7 +108,7 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 // TODO(): 12h format (%I:%M:%S %p)
             case 'R':
                 formattedDate += formatTwoDigits(clock.getHour());
-                formattedDate += ":";
+                formattedDate += ':';
                 formattedDate += formatTwoDigits(clock.getMin());
                 i++;
                 break;
@@ -119,9 +118,9 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 break;
             case 'T':
                 formattedDate += formatTwoDigits(clock.getHour());
-                formattedDate += ":";
+                formattedDate += ':';
                 formattedDate += formatTwoDigits(clock.getMin());
-                formattedDate += ":";
+                formattedDate += ':';
                 formattedDate += formatTwoDigits(clock.getSec());
                 i++;
                 break;

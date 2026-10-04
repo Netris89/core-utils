@@ -72,12 +72,12 @@ auto Parser::ParseOctal(const string& argument, size_t position) -> string
     {
         octalSeq.erase(0, 2); // Removes '\\' & '0' from the sequence
 
-        if (octalSeq.size() != 0)
+        if (!octalSeq.empty())
         {
             decimal   = stoi(octalSeq, nullptr, OCTAL);      // transforms the octal number in decimal
             asciiChar = static_cast<char>(decimal) + endSeq; // Converts the decimal number in ascii char then adds anything remaining at the end
         }
-        else if (endSeq.size() == 0)
+        else if (endSeq.empty())
         {
             asciiChar = "\\0";
         }
@@ -187,7 +187,7 @@ auto Parser::ParseArgument(const string& argument) -> string
         }
         else
         {
-            parsedArg += "\\";
+            parsedArg += '\\';
         }
     }
 

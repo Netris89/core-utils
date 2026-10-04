@@ -42,7 +42,7 @@ enum class Day : std::uint8_t
     Wednesday = 3,
     Thursday  = 4,
     Friday    = 5,
-    Saturday  = 6
+    Saturday  = 6,
 };
 
 /**
@@ -72,8 +72,14 @@ inline auto getShortDayName(int day) -> std::string_view
 inline auto getLongDayName(int day) -> std::string_view
 {
     static constexpr std::array<std::string_view, 7> longNames = {
-        "Sunday", "Monday", "Tuesday",
-        "Wednesday", "Thursday", "Friday", "Saturday"};
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    };
 
     return longNames.at(day);
 }

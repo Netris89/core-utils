@@ -12,7 +12,6 @@
 
 #include <array>
 #include <chrono>
-#include <csignal>
 #include <cstdlib>
 #include <iostream>
 #include <span>
