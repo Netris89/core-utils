@@ -88,10 +88,10 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'I':
-                // TODO() : Hour 12h (01-12)
+                // TODO : Hour 12h (01-12)
                 break;
             case 'j':
-                // TODO() : Day of the year (001-366)
+                // TODO : Day of the year (001-366)
                 break;
             case 'm':
                 formattedDate += formatTwoDigits(clock.getMonth());
@@ -102,10 +102,10 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'p':
-                // TODO() : Handles AM/PM
+                // TODO : Handles AM/PM
                 break;
             case 'r':
-                // TODO(): 12h format (%I:%M:%S %p)
+                // TODO: 12h format (%I:%M:%S %p)
             case 'R':
                 formattedDate += formatTwoDigits(clock.getHour());
                 formattedDate += ':';
@@ -125,10 +125,10 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'u':
-                // TODO() : Day of the week (1=Monday, 7=Sunday)
+                // TODO : Day of the week (1=Monday, 7=Sunday)
                 break;
             case 'w':
-                // TODO() : Day of the week (0=Sunday, 6=Saturday)
+                // TODO : Day of the week (0=Sunday, 6=Saturday)
                 break;
             case 'y':
                 tempDate = to_string(clock.getYear());
@@ -140,7 +140,7 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'z':
-                // TODO() : UTC offset
+                // TODO : UTC offset
                 break;
             case 'Z':
                 formattedDate += clock.getTimeZone();
