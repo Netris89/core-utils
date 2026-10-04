@@ -87,3 +87,20 @@ TEST(ParserTests, MixedEscapeSequences)
 {
     EXPECT_EQ(Parser::ParseArgument("Mix\\a\\b\\t\\nEnd"), string("Mix") + '\a' + '\b' + '\t' + '\n' + "End");
 }
+
+TEST(ParserTests, EscapeBeforeTrailingLoneBackslash)
+{
+    // KNOWN ISSUE (see FIXME in parser.cpp, ParseArgument): the check
+    // `argument.back() == '\\'` looks at the LAST character of the whole
+    // string, not whether the current backslash is actually a lone trailing
+    // one. A valid mid-string escape gets treated as literal whenever the
+    // string happens to end with an unescaped backslash.
+    // This asserts the CORRECT expected behavior and will fail until fixed.
+    EXPECT_EQ(Parser::ParseArgument("Tab\\tEnd\\"), "Tab\tEnd\\");
+}
+
+TEST(ParserTests, MultipleEscapesBeforeTrailingLoneBackslash)
+{
+    // Same root cause as above, with two escapes earlier in the string.
+    EXPECT_EQ(Parser::ParseArgument("A\\nB\\tC\\"), "A\nB\tC\\");
+}

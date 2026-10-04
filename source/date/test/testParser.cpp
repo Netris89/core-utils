@@ -134,3 +134,78 @@ TEST(ParserFormatTests, UnknownPlaceholder)
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "Date: %x\n");
 }
+
+TEST(ParserDateTests, RejectsArgumentShorterThanBaseLength)
+{
+    string tooShort = "100314"; // 6 chars, below the minimum length
+
+    EXPECT_EQ(Parser::ParseDate(tooShort), nullptr);
+}
+
+TEST(ParserDateTests, DefaultsToCurrentYearWhenYearNotProvided)
+{
+    string minimal = "10031430";
+
+    auto result = Parser::ParseDate(minimal);
+
+    ASSERT_NE(result, nullptr);
+
+    tm checked        = {};
+    time_t parsedTime = result->tv_sec;
+    localtime_r(&parsedTime, &checked);
+
+    time_t now = time(nullptr);
+    tm nowTm   = {};
+    localtime_r(&now, &nowTm);
+
+    // KNOWN ISSUE: currently fails, year defaults to 0 (tm_year=-1900)
+    // instead of the current year.
+    EXPECT_EQ(checked.tm_year, nowTm.tm_year);
+}
+
+TEST(ParserDateTests, ParsesFullFormatWithYearAndSeconds)
+{
+    string full = "100314302026.30"; // month day hour minute year . seconds
+
+    auto result = Parser::ParseDate(full);
+
+    ASSERT_NE(result, nullptr);
+
+    tm checked        = {};
+    time_t parsedTime = result->tv_sec;
+    localtime_r(&parsedTime, &checked);
+
+    EXPECT_EQ(checked.tm_mon, 9);
+    EXPECT_EQ(checked.tm_mday, 3);
+    EXPECT_EQ(checked.tm_hour, 14);
+    EXPECT_EQ(checked.tm_min, 30);
+    EXPECT_EQ(checked.tm_year, 126); // 2026 - 1900
+    EXPECT_EQ(checked.tm_sec, 30);
+}
+
+TEST(ParserDateTests, DoesNotCrashWithYearButNoSeconds)
+{
+    string noSeconds = "100314302026"; // 12 chars: year present, no seconds
+
+    EXPECT_NO_THROW({
+        auto result = Parser::ParseDate(noSeconds);
+        ASSERT_NE(result, nullptr);
+    });
+}
+
+TEST(ParserDateTests, RejectsOutOfRangeMonth)
+{
+    string invalidMonth = "13031430";
+
+    // KNOWN ISSUE: currently silently ignored instead of rejected.
+    EXPECT_EQ(Parser::ParseDate(invalidMonth), nullptr);
+}
+
+TEST(ParserDateTests, RejectsNonNumericMonth)
+{
+    string nonNumeric = "ab031430";
+
+    // KNOWN ISSUE: currently throws std::invalid_argument uncaught and
+    // crashes the program, instead of being rejected like other invalid input.
+    EXPECT_EQ(Parser::ParseDate(nonNumeric), nullptr);
+}
