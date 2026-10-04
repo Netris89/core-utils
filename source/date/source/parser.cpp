@@ -29,6 +29,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 #include "day.hpp"
@@ -36,6 +37,7 @@
 #include "parser.hpp"
 
 using std::cout;
+using std::invalid_argument;
 using std::make_unique;
 using std::ostringstream;
 using std::setfill;
@@ -226,8 +228,24 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     day    = stoi(dayStr);
     hour   = stoi(hourStr);
     minute = stoi(minuteStr);
-    year   = stoi(yearStr);
-    second = stoi(secondStr);
+
+    try
+    {
+        year = stoi(yearStr);
+    }
+    catch (const invalid_argument& e)
+    {
+        year = 0;
+    }
+
+    try
+    {
+        second = stoi(secondStr);
+    }
+    catch (const invalid_argument& e)
+    {
+        second = 0;
+    }
 
     if (month > 0 && month <= MAX_MONTH)
     {
