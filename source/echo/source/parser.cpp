@@ -103,6 +103,7 @@ auto Parser::ParseEscapeCharacter(const string& argument, size_t position) -> st
         parsedEscape += '\b';
         break;
     case 'c':
+        // TODO : implement \c case
         break;
     case 'f':
         parsedEscape += '\f';
@@ -147,6 +148,7 @@ auto Parser::ParseArgument(const string& argument) -> string
             continue;
         }
 
+        // FIXME : argument.back() == '\\' checks the last char of the whole string, not whether this backslash is at the current position — causes valid mid-string escapes to be treated as literal when the string happens to end with a lone backslash
         if (argument.back() == '\\')
         {
             parsedArg += '\\';
