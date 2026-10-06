@@ -197,7 +197,6 @@ TEST(ParserDateTests, RejectsOutOfRangeMonth)
 {
     string invalidMonth = "13031430";
 
-    // KNOWN ISSUE: currently silently ignored instead of rejected.
     EXPECT_EQ(Parser::ParseDate(invalidMonth), nullptr);
 }
 
@@ -205,7 +204,100 @@ TEST(ParserDateTests, RejectsNonNumericMonth)
 {
     string nonNumeric = "ab031430";
 
-    // KNOWN ISSUE: currently throws std::invalid_argument uncaught and
-    // crashes the program, instead of being rejected like other invalid input.
     EXPECT_EQ(Parser::ParseDate(nonNumeric), nullptr);
+}
+
+TEST(ParserFormatTests, Hour12Format) // %I
+{
+    MockClock clock;
+    string format = "+%I";
+
+    ON_CALL(clock, getHour()).WillByDefault(Return(14)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "02\n");
+}
+
+TEST(ParserFormatTests, AmIndicator) // %p
+{
+    MockClock clock;
+    string format = "+%p";
+
+    ON_CALL(clock, getHour()).WillByDefault(Return(9)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "AM\n");
+}
+
+TEST(ParserFormatTests, PmIndicator) // %p
+{
+    MockClock clock;
+    string format = "+%p";
+
+    ON_CALL(clock, getHour()).WillByDefault(Return(14)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "PM\n");
+}
+
+TEST(ParserFormatTests, IsoWeekday) // %u: 1=Monday .. 7=Sunday
+{
+    MockClock clock;
+    string format = "+%u";
+
+    ON_CALL(clock, getDayOfTheWeek()).WillByDefault(Return(0)); // Sunday (tm_wday convention)
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "7\n");
+}
+
+TEST(ParserFormatTests, NumericWeekday) // %w: 0=Sunday .. 6=Saturday
+{
+    MockClock clock;
+    string format = "+%w";
+
+    ON_CALL(clock, getDayOfTheWeek()).WillByDefault(Return(4)); // Thursday
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "4\n");
+}
+
+TEST(ParserFormatTests, Full12HourTime) // %r, POSIX: equivalent to %I:%M:%S %p
+{
+    MockClock clock;
+    string format = "+%r";
+
+    ON_CALL(clock, getHour()).WillByDefault(Return(13)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getMin()).WillByDefault(Return(36)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getSec()).WillByDefault(Return(32)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
+    // KNOWN ISSUE: %r currently falls through into the %R case in the
+    // switch (no break before "case 'R':"), so it wrongly produces the
+    // same HH:MM output as %R instead of %I:%M:%S %p.
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "01:36:32 PM\n");
+}
+
+TEST(ParserDateTests, InfersTwentyFirstCenturyForLowTwoDigitYear)
+{
+    string argument = "1003143026"; // mm dd hh MM + yy=26, no century
+
+    auto result = Parser::ParseDate(argument);
+
+    ASSERT_NE(result, nullptr);
+
+    tm checked        = {};
+    time_t parsedTime = result->tv_sec;
+    localtime_r(&parsedTime, &checked);
+
+    EXPECT_EQ(checked.tm_year, 126); // 2026 - 1900
+}
+
+TEST(ParserDateTests, InfersTwentiethCenturyForHighTwoDigitYear)
+{
+    string argument = "1003143085"; // mm dd hh MM + yy=85, no century
+
+    auto result = Parser::ParseDate(argument);
+
+    ASSERT_NE(result, nullptr);
+
+    tm checked        = {};
+    time_t parsedTime = result->tv_sec;
+    localtime_r(&parsedTime, &checked);
+
+    EXPECT_EQ(checked.tm_year, 85); // 1985 - 1900
 }
