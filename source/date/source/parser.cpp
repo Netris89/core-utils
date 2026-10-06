@@ -196,6 +196,7 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     constexpr int YEAR_POS             = 8;
     constexpr int POINT_POS            = 12;
     constexpr int SECOND_POS           = 13;
+    constexpr int DECEMBER             = 12;
     tm localtime                       = {};
     time_t time                        = 0;
     unique_ptr<timespec> convertedTime = make_unique<timespec>();
@@ -208,6 +209,12 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
 
     // Extracts the various sections of the date from the argument (ie. day, month, etc)
     monthStr += argument.substr(MONTH_POS, 2);
+
+    if (stoi(monthStr) > DECEMBER)
+    {
+        return nullptr;
+    }
+
     dayStr += argument.substr(DAY_POS, 2);
     hourStr += argument.substr(HOUR_POS, 2);
     minuteStr += argument.substr(MIN_POS, 2);
