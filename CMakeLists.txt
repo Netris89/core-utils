@@ -11,6 +11,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include(CTest)
 
+add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+add_link_options(-fprofile-instr-generate)
+
 add_subdirectory(source/echo)
 add_subdirectory(source/date)
 add_subdirectory(source/sleep)
