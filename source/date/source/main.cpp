@@ -79,7 +79,27 @@ auto main(int argc, char* argv[]) -> int
         }
         if (isdigit(argument.front()) != 0)
         {
-            Clock::setTime(Parser::ParseDate(argument).get());
+            auto result = Parser::ParseDate(argument);
+            
+            if (result == nullptr)
+            {
+                cerr << "Invalid argument\n";
+                return EXIT_FAILURE;
+            }
+
+            Clock::setTime(result.get());
+            return EXIT_SUCCESS;
+        }
+        if (argument.front() != '+')
+        {
+            auto result = Parser::ParseDate(argument);
+
+            if (result == nullptr)
+            {
+                cerr << "Invalid argument\n";
+                return EXIT_FAILURE;
+            }
+
             return EXIT_SUCCESS;
         }
 

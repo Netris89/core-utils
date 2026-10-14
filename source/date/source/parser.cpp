@@ -35,7 +35,6 @@
 #include "month.hpp"
 #include "parser.hpp"
 
-using std::cout;
 using std::invalid_argument;
 using std::make_unique;
 using std::ostringstream;
@@ -105,7 +104,7 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 // TODO : Handles AM/PM
                 break;
             case 'r':
-                // TODO: 12h format (%I:%M:%S %p)
+                // TODO : 12h format (%I:%M:%S %p)
             case 'R':
                 formattedDate += formatTwoDigits(clock.getHour());
                 formattedDate += ':';
@@ -203,12 +202,16 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
 
     if (argument.size() < BASE_LENGTH)
     {
-        cout << "Invalid argument\n";
         return nullptr;
     }
 
     // Extracts the various sections of the date from the argument (ie. day, month, etc)
     monthStr += argument.substr(MONTH_POS, 2);
+
+    if (monthStr.find_first_not_of("0123456789") != string::npos)
+    {
+        return nullptr;
+    }
 
     if (stoi(monthStr) > DECEMBER)
     {
@@ -219,14 +222,39 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     hourStr += argument.substr(HOUR_POS, 2);
     minuteStr += argument.substr(MIN_POS, 2);
 
+    if (dayStr.find_first_not_of("0123456789") != string::npos)
+    {
+        return nullptr;
+    }
+
+    if (hourStr.find_first_not_of("0123456789") != string::npos)
+    {
+        return nullptr;
+    }
+
+    if (minuteStr.find_first_not_of("0123456789") != string::npos)
+    {
+        return nullptr;
+    }
+
     if (argument.size() > BASE_LENGTH) // If the argument is longer than 7, it means we want to set the year
     {
         yearStr += argument.substr(YEAR_POS, 4);
+
+        if (yearStr.find_first_not_of("0123456789") != string::npos)
+        {
+            return nullptr;
+        }
     }
 
     if (argument.size() > MAX_LENGTH && argument.at(POINT_POS) == '.') // If the argument is longer than 12 and the char at position 12 is '.', it means we want to set the seconds
     {
         secondStr += argument.substr(SECOND_POS, 2);
+
+        if (secondStr.find_first_not_of("0123456789") != string::npos)
+        {
+            return nullptr;
+        }
     }
 
     // Converts the strings to integer
