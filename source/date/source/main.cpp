@@ -26,6 +26,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -36,16 +37,18 @@
 
 using std::cerr;
 using std::cout;
+using std::span;
 using std::string;
 using std::vector;
 
 auto main(int argc, char* argv[]) -> int
 {
-    vector<string> arguments(argv + 1, argv + argc); // Vector of arguments from command-line inputs
-    bool isUtc = false;                              // Indicates that the time should be printed in UTC instead of local time.
-    int opt    = 0;                                  // Result of getopt
-    Clock clock;                                     // Object for the clock
-    string formattedDate;                            // Formatted date
+    span<char*> args(argv, argc);
+    vector<string> arguments(args.begin() + 1, args.end()); // Vector of arguments from command-line inputs
+    bool isUtc = false;                                     // Indicates that the time should be printed in UTC instead of local time.
+    int opt    = 0;                                         // Result of getopt
+    Clock clock;                                            // Object for the clock
+    string formattedDate;                                   // Formatted date
 
     // Check if getop returns -1. If it does, handle the option
     while ((opt = getopt(argc, argv, "u")) != -1)
@@ -80,7 +83,7 @@ auto main(int argc, char* argv[]) -> int
         if (isdigit(argument.front()) != 0)
         {
             auto result = Parser::ParseDate(argument);
-            
+
             if (result == nullptr)
             {
                 cerr << "Invalid argument\n";
