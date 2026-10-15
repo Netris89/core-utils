@@ -103,7 +103,8 @@ auto Parser::ParseEscapeCharacter(const string& argument, size_t position) -> st
         parsedEscape += '\b';
         break;
     case 'c':
-        // TODO : implement \c case
+        // Nothing to append: ParseArgument stops the parsing of the argument on \c,
+        // but this case prevents the default branch from outputting the sequence itself
         break;
     case 'f':
         parsedEscape += '\f';
