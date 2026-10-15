@@ -28,6 +28,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -37,12 +38,14 @@
 
 using std::cerr;
 using std::cout;
+using std::span;
 using std::string;
 using std::vector;
 
 auto main(int argc, char* argv[]) -> int
 {
-    vector<string> arguments(argv + 1, argv + argc); // Vector of arguments from command-line inputs
+    span<char*> args(argv, argc);
+    vector<string> arguments(args.begin() + 1, args.end()); // Vector of arguments from command-line inputs
 
     // Check if no arguments are provided (argc <= 1 means no input string)
     if (argc <= 1)
@@ -58,7 +61,7 @@ auto main(int argc, char* argv[]) -> int
     {
         cout << Parser::ParseArgument(argument);
 
-        if (index == arguments.size()- 1)
+        if (index == arguments.size() - 1)
         {
             cout << " ";
         }
