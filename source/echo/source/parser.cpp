@@ -150,20 +150,16 @@ auto Parser::ParseArgument(const string& argument) -> string
             continue;
         }
 
-        // If the current character is
-        if (argument.at(i) == '\\')
+        // A backslash in last position has nothing to escape, so it is kept literally.
+        // This also guarantees that argument.at(i + 1) below is valid
+        if (i == argument.size() - 1)
         {
-            // A backslash in last position has nothing to escape, so it is kept literally.
-            // This also guarantees that argument.at(i + 1) below is valid
-            if (i == argument.size() - 1)
-            {
-                parsedArg += '\\';
-                continue;
-            }
+            parsedArg += '\\';
+            continue;
         }
 
         // The backslash is followed by something other than a backslash: it starts an escape sequence
-        if (argument.at(i + 1) != '\\' && i != argument.size() - 1)
+        if (argument.at(i + 1) != '\\')
         {
             // Converts the escape sequence, unknown sequences are kept as is
             parsedArg += ParseEscapeCharacter(argument, i);
@@ -176,11 +172,6 @@ auto Parser::ParseArgument(const string& argument) -> string
                 // Skips the digits that follow the '0' so they are not output a second time
                 while (position < argument.size() && isdigit(argument.at(position)) != 0)
                 {
-                    if (isdigit(argument.at(position)) == 0)
-                    {
-                        break;
-                    }
-
                     i++;
                     position++;
                 }
