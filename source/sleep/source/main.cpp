@@ -10,6 +10,7 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sleep.html
  */
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <cstdlib>
@@ -25,6 +26,7 @@ using std::span;
 using std::stoi;
 using std::string;
 using std::chrono::seconds;
+using std::ranges::copy;
 using std::this_thread::sleep_for;
 
 auto main(int argc, char* argv[]) -> int
@@ -40,7 +42,7 @@ auto main(int argc, char* argv[]) -> int
         return EXIT_FAILURE;
     }
 
-    arguments = {args[0], args[1]}; // Store the arguments as std::string for easier manipulation
+    copy(args, arguments.begin()); // Store the arguments as std::string for easier manipulation
 
     try
     {
