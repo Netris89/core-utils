@@ -139,19 +139,22 @@ auto Parser::ParseArgument(const string& argument) -> string
 {
     string parsedArg; // Parsed argument being constructed
 
+    // Copies each character as is, except backslashes: a backslash is either a lone trailing one (kept literally),
+    // the start of an escape sequence, or the first half of a pair of backslashes
     for (size_t i = 0; i < argument.size(); i++)
     {
-        // If the current character is not \\, just adds it to the output string being constructed
+        // If the current character is not a backslash, just adds it to the output string being constructed
         if (argument.at(i) != '\\')
         {
             parsedArg += argument.at(i);
             continue;
         }
 
-        // If the current character is 
+        // If the current character is
         if (argument.at(i) == '\\')
         {
-            // If i 
+            // A backslash in last position has nothing to escape, so it is kept literally.
+            // This also guarantees that argument.at(i + 1) below is valid
             if (i == argument.size() - 1)
             {
                 parsedArg += '\\';
@@ -159,9 +162,10 @@ auto Parser::ParseArgument(const string& argument) -> string
             }
         }
 
-        // If the current character is not \\ and is not the last character, parse it
+        // The backslash is followed by something other than a backslash: it starts an escape sequence
         if (argument.at(i + 1) != '\\' && i != argument.size() - 1)
         {
+            // Converts the escape sequence, unknown sequences are kept as is
             parsedArg += ParseEscapeCharacter(argument, i);
 
             // If the next character is 0, it is an octal sequence and we need to advance the position counter of the size of the sequence
@@ -169,6 +173,7 @@ auto Parser::ParseArgument(const string& argument) -> string
             {
                 size_t position = i + 2;
 
+                // Skips the digits that follow the '0' so they are not output a second time
                 while (position < argument.size() && isdigit(argument.at(position)) != 0)
                 {
                     if (isdigit(argument.at(position)) == 0)
@@ -180,12 +185,15 @@ auto Parser::ParseArgument(const string& argument) -> string
                     position++;
                 }
 
+                // Skips the '0' itself, so the for loop resumes right after the sequence
                 i++;
             }
-            else if (argument.at(i + 1) == 'c') // If the next character is C, it is an interrupt sequence so returns the parsed argument as it is
+            // \c stops the parsing of this argument: everything after it is dropped
+            else if (argument.at(i + 1) == 'c')
             {
                 return parsedArg;
             }
+            // Regular escape: ParseEscapeCharacter handled both characters, so skips the escape letter
             else
             {
                 i++;
@@ -193,6 +201,8 @@ auto Parser::ParseArgument(const string& argument) -> string
         }
         else
         {
+            // The backslash is followed by another backslash, so only one is appended
+            // FIXME : i is not advanced past the second backslash, so it is processed again on the next iteration (a pair then misbehaves, e.g. "a\\b" gives a backspace)
             parsedArg += '\\';
         }
     }
