@@ -97,3 +97,18 @@ TEST(ParserTests, MultipleEscapesBeforeTrailingLoneBackslash)
 {
     EXPECT_EQ(Parser::ParseArgument("A\\nB\\tC\\"), "A\nB\tC\\");
 }
+
+TEST(ParserTests, EscapedBackslashAtEnd)
+{
+    EXPECT_EQ(Parser::ParseArgument("A\\\\"), "A\\");
+}
+
+TEST(ParserTests, EscapedBackslashThenB)
+{
+    EXPECT_EQ(Parser::ParseArgument("a\\\\b"), "a\\b");
+}
+
+TEST(ParserTests, EscapedBackslashThenN)
+{
+    EXPECT_EQ(Parser::ParseArgument("a\\\\nb"), "a\\nb");
+}

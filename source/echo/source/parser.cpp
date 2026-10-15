@@ -201,9 +201,10 @@ auto Parser::ParseArgument(const string& argument) -> string
         }
         else
         {
-            // The backslash is followed by another backslash, so only one is appended
-            // FIXME : i is not advanced past the second backslash, so it is processed again on the next iteration (a pair then misbehaves, e.g. "a\\b" gives a backspace)
+            // The backslash is followed by another backslash (an escaped backslash): appends a single one
+            // and skips the second so it is not processed again as the start of a new sequence
             parsedArg += '\\';
+            i++;
         }
     }
 
