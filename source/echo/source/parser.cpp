@@ -148,15 +148,19 @@ auto Parser::ParseArgument(const string& argument) -> string
             continue;
         }
 
-        // FIXME : argument.back() == '\\' checks the last char of the whole string, not whether this backslash is at the current position — causes valid mid-string escapes to be treated as literal when the string happens to end with a lone backslash
-        if (argument.back() == '\\')
+        // If the current character is 
+        if (argument.at(i) == '\\')
         {
-            parsedArg += '\\';
-            continue;
+            // If i 
+            if (i == argument.size() - 1)
+            {
+                parsedArg += '\\';
+                continue;
+            }
         }
 
         // If the current character is not \\ and is not the last character, parse it
-        if (argument.at(i + 1) != '\\' && argument.back() != '\\')
+        if (argument.at(i + 1) != '\\' && i != argument.size() - 1)
         {
             parsedArg += ParseEscapeCharacter(argument, i);
 
