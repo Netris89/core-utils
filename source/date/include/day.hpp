@@ -56,7 +56,14 @@ enum class Day : std::uint8_t
 inline auto getShortDayName(int day) -> std::string_view
 {
     static constexpr std::array<std::string_view, 7> shortNames = {
-        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        "Sun",
+        "Mon", 
+        "Tue", 
+        "Wed", 
+        "Thu", 
+        "Fri", 
+        "Sat",
+    };
 
     return shortNames.at(day);
 }
