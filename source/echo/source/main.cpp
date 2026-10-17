@@ -8,7 +8,7 @@
  *  \n (newline), \t (tab), etc. It prints the command-line arguments with the
  *  escape sequences interpreted correctly.
  *
- *  Usage: ./echo <string>
+ *  Usage: ./echo [string]
  *
  *  The following escape sequences are supported:
  *      \a      : Alert
