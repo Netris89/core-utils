@@ -26,6 +26,7 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/echo.html
  */
 
+#include <vector>
 #pragma Once
 
 #include <cstddef>
@@ -122,4 +123,19 @@ public:
      * @see Parser::ParseEscapeCharacter
      */
     auto static ParseArgument(const std::string&) -> std::string;
+
+    /**
+     * @brief Parses all the arguments passed to echo and builds the complete output.
+     *
+     * Each argument is interpreted with `ParseArgument()`, then the results are joined with a single
+     * space between them. A newline is appended after the last argument, unless the `\\c` escape sequence
+     * is encountered: the parsing then stops immediately, the remaining arguments are ignored and no
+     * newline is written. Without any argument, the output is only a newline.
+     *
+     * @param arguments The command-line arguments, without the program name.
+     * @return The text to write to the standard output, including the final newline when it applies.
+     *
+     * @see Parser::ParseArgument
+     */
+    auto static ParseArguments(const std::vector<std::string>&) -> std::string;
 };

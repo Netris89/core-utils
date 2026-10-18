@@ -29,11 +29,13 @@
 #include <cctype>
 #include <cstddef>
 #include <string>
+#include <vector>
 
 #include "parser.hpp"
 
 using std::stoi;
 using std::string;
+using std::vector;
 
 Parser::Parser() = default;
 
@@ -201,4 +203,32 @@ auto Parser::ParseArgument(const string& argument) -> string
     }
 
     return parsedArg;
+}
+
+auto Parser::ParseArguments(const vector<string>& arguments) -> string
+{
+    string arg;
+    int index = 0;
+
+    if (arguments.empty())
+    {
+        arg = '\n';
+        return arg;
+    }
+
+    for (const string& argument : arguments)
+    {
+        arg += Parser::ParseArgument(argument);
+
+        if (index > 0)
+        {
+            arg += ' ';
+        }
+
+        index++;
+    }
+
+    arg += '\n';
+
+    return arg;
 }

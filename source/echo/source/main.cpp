@@ -32,8 +32,6 @@
 #include <string>
 #include <vector>
 
-#include <unistd.h>
-
 #include "parser.hpp"
 
 using std::cerr;
@@ -54,21 +52,7 @@ auto main(int argc, char* argv[]) -> int
         return EXIT_FAILURE;
     }
 
-    int index = 0; // Tracks the current position in arguments to detect the last element
-
-    // Output the strings (arguments) passed after the options
-    for (const string& argument : arguments)
-    {
-        cout << Parser::ParseArgument(argument);
-
-        if (index == arguments.size() - 1)
-        {
-            cout << " ";
-        }
-
-        index++;
-    }
-
+    cout << Parser::ParseArguments(arguments);
     cout << "\n";
 
     return EXIT_SUCCESS;
