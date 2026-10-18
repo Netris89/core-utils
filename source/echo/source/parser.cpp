@@ -81,7 +81,7 @@ auto Parser::ParseOctal(const string& argument, size_t position) -> string
         }
         else if (endSeq.empty())
         {
-            asciiChar = "\\0";
+            asciiChar = '\0';
         }
     }
     else
