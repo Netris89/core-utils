@@ -138,7 +138,7 @@ auto Parser::ParseEscapeCharacter(const string& argument, size_t position) -> st
     return parsedEscape;
 }
 
-auto Parser::ParseArgument(const string& argument) -> string
+auto Parser::ParseArgument(const string& argument, bool* suppressNewline) -> string
 {
     string parsedArg; // Parsed argument being constructed
 
@@ -182,9 +182,15 @@ auto Parser::ParseArgument(const string& argument) -> string
                 // Skips the '0' itself, so the for loop resumes right after the sequence
                 i++;
             }
-            // \c stops the parsing of this argument: everything after it is dropped
+            // \c stops the parsing of this argument: everything after it is dropped,
+            // and the caller is told that the final newline must be suppressed
             else if (argument.at(i + 1) == 'c')
             {
+                if (suppressNewline != nullptr)
+                {
+                    *suppressNewline = true;
+                }
+
                 return parsedArg;
             }
             // Regular escape: ParseEscapeCharacter handled both characters, so skips the escape letter
@@ -207,16 +213,22 @@ auto Parser::ParseArgument(const string& argument) -> string
 
 auto Parser::ParseArguments(const vector<string>& arguments) -> string
 {
-    string arg;    // Complete output being built: the parsed arguments separated by single spaces, then a newline
-    int index = 0; // Position of the current argument, used to know whether it is the last one
+    string arg;                   // Complete output being built: the parsed arguments separated by single spaces, then a newline
+    int index            = 0;     // Position of the current argument, used to know whether it is the last one
+    bool suppressNewline = false; // Set by ParseArgument when it meets \c, which ends the output without a final newline
 
     // Goes through the arguments in order: each one has its escape sequences interpreted by ParseArgument
     // and is appended to the output, followed by a single space unless it is the last argument.
-    // FIXME : the \c escape sequence is not handled yet: it must stop the loop here, ignoring the remaining arguments, and suppress the final newline
+    // The loop stops as soon as an argument contains \c: the remaining arguments are ignored
     for (const string& argument : arguments)
     {
         // Interprets the escape sequences of this argument and appends the result to the output
-        arg += Parser::ParseArgument(argument);
+        arg += Parser::ParseArgument(argument, &suppressNewline);
+
+        if (suppressNewline)
+        {
+            return arg;
+        }
 
         // POSIX: arguments are separated by a single space, and there is none after the last one
         if (index < arguments.size() - 1)

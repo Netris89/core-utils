@@ -26,8 +26,9 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/echo.html
  */
 
+#pragma once
+
 #include <vector>
-#pragma Once
 
 #include <cstddef>
 #include <string>
@@ -122,7 +123,7 @@ public:
      *
      * @see Parser::ParseEscapeCharacter
      */
-    auto static ParseArgument(const std::string&) -> std::string;
+    auto static ParseArgument(const std::string&, bool* suppressNewline = nullptr) -> std::string;
 
     /**
      * @brief Parses all the arguments passed to echo and builds the complete output.
