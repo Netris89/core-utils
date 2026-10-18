@@ -34,7 +34,6 @@
 
 #include "parser.hpp"
 
-using std::cerr;
 using std::cout;
 using std::span;
 using std::string;
@@ -42,18 +41,10 @@ using std::vector;
 
 auto main(int argc, char* argv[]) -> int
 {
-    span<char*> args(argv, argc);
-    vector<string> arguments(args.begin() + 1, args.end()); // Vector of arguments from command-line inputs
-
-    // Check if no arguments are provided (argc <= 1 means no input string)
-    if (argc <= 1)
-    {
-        cerr << "Usage: ./echo <string>\n";
-        return EXIT_FAILURE;
-    }
+    span<char*> args(argv, argc);                           // Wraps the raw argv array in a std::span so it can be sliced without pointer arithmetic
+    vector<string> arguments(args.begin() + 1, args.end()); // Command-line arguments, without the program name (args[0])
 
     cout << Parser::ParseArguments(arguments);
-    cout << "\n";
 
     return EXIT_SUCCESS;
 }

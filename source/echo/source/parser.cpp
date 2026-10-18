@@ -207,20 +207,19 @@ auto Parser::ParseArgument(const string& argument) -> string
 
 auto Parser::ParseArguments(const vector<string>& arguments) -> string
 {
-    string arg;
-    int index = 0;
+    string arg;    // Complete output being built: the parsed arguments separated by single spaces, then a newline
+    int index = 0; // Position of the current argument, used to know whether it is the last one
 
-    if (arguments.empty())
-    {
-        arg = '\n';
-        return arg;
-    }
-
+    // Goes through the arguments in order: each one has its escape sequences interpreted by ParseArgument
+    // and is appended to the output, followed by a single space unless it is the last argument.
+    // FIXME : the \c escape sequence is not handled yet: it must stop the loop here, ignoring the remaining arguments, and suppress the final newline
     for (const string& argument : arguments)
     {
+        // Interprets the escape sequences of this argument and appends the result to the output
         arg += Parser::ParseArgument(argument);
 
-        if (index > 0)
+        // POSIX: arguments are separated by a single space, and there is none after the last one
+        if (index < arguments.size() - 1)
         {
             arg += ' ';
         }
@@ -228,6 +227,8 @@ auto Parser::ParseArguments(const vector<string>& arguments) -> string
         index++;
     }
 
+    // A newline always follows the last argument. With no argument the loop does not run,
+    // so only the newline is written, which is what POSIX requires
     arg += '\n';
 
     return arg;
