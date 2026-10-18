@@ -49,7 +49,7 @@ auto Parser::ParseOctal(const string& argument, size_t position) -> string
     string asciiChar;       // Resulting ASCII character from octal conversion
 
     // Loops through the whole argument to find where the octal escape sequence is and put it whole in a variable
-    for (size_t i = position; i < argument.size() && seqToParse.size() < 4; i++)
+    for (size_t i = position; i < argument.size() && seqToParse.size() <= 4; i++)
     {
         if (argument.at(i) == '\\' || argument.at(i) == '0' || isdigit(argument.at(i)) != 0)
         {
