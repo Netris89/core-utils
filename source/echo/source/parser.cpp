@@ -66,7 +66,8 @@ auto Parser::ParseOctal(const string& argument, size_t position) -> string
         }
         else
         {
-            endSeq += character;
+            endSeq += seqToParse.substr(octalSeq.size());
+            break;
         }
     }
 
@@ -79,9 +80,10 @@ auto Parser::ParseOctal(const string& argument, size_t position) -> string
             decimal   = stoi(octalSeq, nullptr, OCTAL);      // transforms the octal number in decimal
             asciiChar = static_cast<char>(decimal) + endSeq; // Converts the decimal number in ascii char then adds anything remaining at the end
         }
-        else if (endSeq.empty())
+        else
         {
             asciiChar = '\0';
+            asciiChar += endSeq;
         }
     }
     else
