@@ -172,13 +172,24 @@ auto Parser::ParseArgument(const string& argument, bool* suppressNewline) -> str
             // If the next character is 0, it is an octal sequence and we need to advance the position counter of the size of the sequence
             if (argument.at(i + 1) == '0')
             {
-                size_t position = i + 2;
+                size_t position = i + 2; // Stores the index of the first character following the escape prefix.
+                size_t start    = i;     // Stores the starting index of the escape sequence.
+                size_t maxOctal = 3;     // Limits the octal escape sequence to three digits.
 
-                // Skips the digits that follow the '0' so they are not output a second time
+                // Skips at most three octal digits to avoid processing them again.
                 while (position < argument.size() && isdigit(argument.at(position)) != 0)
                 {
-                    i++;
-                    position++;
+                    // TODO : Reduce cognitive complexity
+                    if (position <= start + maxOctal)
+                    {
+                        i++;
+                        position++;
+                    }
+                    else
+                    {
+                        i++;
+                        break;
+                    }
                 }
 
                 // Skips the '0' itself, so the for loop resumes right after the sequence
