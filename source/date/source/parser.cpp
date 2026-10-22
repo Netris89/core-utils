@@ -49,8 +49,11 @@ Parser::Parser() = default;
 
 auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) -> string
 {
-    string formattedDate; // The output date being constructed
-    string tempDate;      // A temporary string in case it's needed
+    string formattedDate;      // The output date being constructed
+    string tempDate;           // A temporary string in case it's needed
+    int tempHour         = 0;  // Stores the hour temporarily for format calculations
+    
+    constexpr int MIDDAY = 12; // Defines the hour at which PM begins
 
     for (int i = 0; i < argument.size(); i++)
     {
@@ -101,7 +104,16 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'p':
-                // TODO : Handles AM/PM
+                tempHour = clock.getHour();
+                if (tempHour <= MIDDAY)
+                {
+                    formattedDate = "AM";
+                }
+                else
+                {
+                    formattedDate = "PM";
+                }
+                i++;
                 break;
             case 'r':
                 // TODO : 12h format (%I:%M:%S %p)
