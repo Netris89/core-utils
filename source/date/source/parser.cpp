@@ -127,7 +127,8 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 // TODO : Day of the week (1=Monday, 7=Sunday)
                 break;
             case 'w':
-                // TODO : Day of the week (0=Sunday, 6=Saturday)
+                formattedDate += to_string(clock.getDayOfTheWeek());
+                i++;
                 break;
             case 'y':
                 tempDate = to_string(clock.getYear());
