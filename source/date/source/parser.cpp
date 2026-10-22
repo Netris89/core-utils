@@ -49,11 +49,12 @@ Parser::Parser() = default;
 
 auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) -> string
 {
-    string formattedDate;      // The output date being constructed
-    string tempDate;           // A temporary string in case it's needed
-    int tempHour         = 0;  // Stores the hour temporarily for format calculations
-    
-    constexpr int MIDDAY = 12; // Defines the hour at which PM begins
+    string formattedDate; // The output date being constructed
+    string tempDate;      // A temporary string in case it's needed
+    int tempHour = 0;     // Stores the hour temporarily for format calculations
+
+    constexpr int MIDDAY   = 12; // Defines the hour at which PM begins
+    constexpr int HALF_DAY = 12; // Defines the number of hours in half a day.
 
     for (int i = 0; i < argument.size(); i++)
     {
@@ -90,7 +91,16 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'I':
-                // TODO : Hour 12h (01-12)
+                tempHour = clock.getHour();
+                if (tempHour > MIDDAY)
+                {
+                    formattedDate = formatTwoDigits(tempHour - HALF_DAY);
+                }
+                else
+                {
+                    formattedDate = formatTwoDigits(tempHour);
+                }
+                i++;
                 break;
             case 'j':
                 // TODO : Day of the year (001-366)
