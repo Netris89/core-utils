@@ -156,7 +156,6 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 formattedDate += formatTwoDigits(clock.getHour());
                 formattedDate += ':';
                 formattedDate += formatTwoDigits(clock.getMin());
-                formattedDate += ' ';
                 i++;
                 break;
             case 'S':
