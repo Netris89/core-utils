@@ -117,11 +117,11 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 tempHour = clock.getHour();
                 if (tempHour <= MIDDAY)
                 {
-                    formattedDate = "AM";
+                    formattedDate += "AM";
                 }
                 else
                 {
-                    formattedDate = "PM";
+                    formattedDate += "PM";
                 }
                 i++;
                 break;
