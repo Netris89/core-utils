@@ -266,8 +266,6 @@ TEST(ParserFormatTests, Full12HourTime) // %r, POSIX: equivalent to %I:%M:%S %p
     ON_CALL(clock, getMin()).WillByDefault(Return(36)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
     ON_CALL(clock, getSec()).WillByDefault(Return(32)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
 
-    // KNOWN ISSUE: %r currently falls through into the %R case in the
-    // switch (no break before "case 'R':"), so it wrongly produces the
     // same HH:MM output as %R instead of %I:%M:%S %p.
     EXPECT_EQ(Parser::ParseFormat(format, clock), "01:36:32 PM\n");
 }

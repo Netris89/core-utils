@@ -127,10 +127,36 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 break;
             case 'r':
                 // TODO : 12h format (%I:%M:%S %p)
+                tempHour = clock.getHour();
+                if (tempHour > MIDDAY)
+                {
+                    formattedDate = formatTwoDigits(tempHour - HALF_DAY);
+                }
+                else
+                {
+                    formattedDate = formatTwoDigits(tempHour);
+                }
+                formattedDate += ':';
+                formattedDate += formatTwoDigits(clock.getMin());
+                formattedDate += ':';
+                formattedDate += formatTwoDigits(clock.getSec());
+                formattedDate += ' ';
+                tempHour = clock.getHour();
+                if (tempHour <= MIDDAY)
+                {
+                    formattedDate += "AM";
+                }
+                else
+                {
+                    formattedDate += "PM";
+                }
+                i++;
+                break;
             case 'R':
                 formattedDate += formatTwoDigits(clock.getHour());
                 formattedDate += ':';
                 formattedDate += formatTwoDigits(clock.getMin());
+                formattedDate += ' ';
                 i++;
                 break;
             case 'S':
