@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <ctime>
 
 #include "clockInterface.hpp"
@@ -105,10 +106,18 @@ public:
     auto getDayOfTheWeek() const -> int override;
 
     /**
+     * @brief Returns the current day of the year as an integer (0 = January 1, 365 = December 31 in a leap year).
+     * @return Integer representing the day of the year.
+     */
+    auto getDayOfTheYear() const -> int override;
+
+    /**
      * @brief Returns the current timezone abbreviation as a string.
      * @return Timezone string (e.g., "UTC", "CEST").
      */
     auto getTimeZone() const -> std::string override;
+
+    auto getUtcOffset() const -> std::chrono::seconds override;
 
     /**
      * @brief Sets the system's real-time clock to a new time.

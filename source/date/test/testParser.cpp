@@ -369,7 +369,7 @@ TEST(ParserFormatTests, UtcOffsetInUtc)
     MockClock clock;
     string format = "+%z";
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(0));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::seconds(0)));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "+0000\n");
 }
@@ -379,13 +379,13 @@ TEST(ParserFormatTests, UtcOffsetEastOfUtc)
     MockClock clock;
     string format = "+%z";
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(60));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(60)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "+0100\n");
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(120));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(120)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "+0200\n");
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(840));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(840)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "+1400\n");
 }
 
@@ -394,10 +394,10 @@ TEST(ParserFormatTests, UtcOffsetWestOfUtc)
     MockClock clock;
     string format = "+%z";
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-300));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(-300)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "-0500\n");
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-720));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(-720)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "-1200\n");
 }
 
@@ -406,10 +406,10 @@ TEST(ParserFormatTests, UtcOffsetWithMinutesEastOfUtc)
     MockClock clock;
     string format = "+%z";
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(330));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(330)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "+0530\n");
 
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(345));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(345)));
     EXPECT_EQ(Parser::ParseFormat(format, clock), "+0545\n");
 }
 
@@ -419,7 +419,7 @@ TEST(ParserFormatTests, UtcOffsetWithMinutesWestOfUtc)
     string format = "+%z";
 
     // Newfoundland standard time: 3 hours 30 minutes west, the minutes must not be negative
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-210));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(-210)));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "-0330\n");
 }
@@ -430,7 +430,7 @@ TEST(ParserFormatTests, UtcOffsetWestOfUtcByLessThanAnHour)
     string format = "+%z";
 
     // The hours part is zero, so the sign cannot be taken from it
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-30));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(-30)));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "-0030\n");
 }
@@ -442,7 +442,7 @@ TEST(ParserFormatTests, UtcOffsetInsideAFormat)
 
     ON_CALL(clock, getHour()).WillByDefault(Return(12));
     ON_CALL(clock, getMin()).WillByDefault(Return(30));
-    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(120));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(std::chrono::minutes(120)));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "12:30 +0200\n");
 }

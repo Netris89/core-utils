@@ -1,8 +1,8 @@
 #pragma once
 
+#include "gmock/gmock.h"
+#include <chrono>
 #include <string>
-
-#include <gmock/gmock.h>
 
 #include "clockInterface.hpp"
 
@@ -18,5 +18,7 @@ public:
     MOCK_METHOD(int, getMin, (), (const, override));
     MOCK_METHOD(int, getSec, (), (const, override));
     MOCK_METHOD(int, getDayOfTheWeek, (), (const, override));
+    MOCK_METHOD(int, getDayOfTheYear, (), (const, override));
     MOCK_METHOD(std::string, getTimeZone, (), (const, override));
+    MOCK_METHOD(std::chrono::seconds, getUtcOffset, (), (const, override));
 };

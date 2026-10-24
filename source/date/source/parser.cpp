@@ -35,6 +35,7 @@
 #include "month.hpp"
 #include "parser.hpp"
 
+using std::format;
 using std::invalid_argument;
 using std::make_unique;
 using std::ostringstream;
@@ -44,14 +45,17 @@ using std::stoi;
 using std::string;
 using std::to_string;
 using std::unique_ptr;
+using std::chrono::hh_mm_ss;
+using std::chrono::seconds;
 
 Parser::Parser() = default;
 
 auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) -> string
 {
-    string formattedDate; // The output date being constructed
-    string tempDate;      // A temporary string in case it's needed
-    int tempHour = 0;     // Stores the hour temporarily for format calculations
+    string formattedDate;        // The output date being constructed
+    string tempDate;             // A temporary string in case it's needed
+    int tempHour = 0;            // Stores the hour temporarily for format calculations
+    hh_mm_ss offset{seconds{0}}; // Stores the UTC offset as hours, minutes, and seconds.
 
     constexpr int MIDDAY   = 12; // Defines the hour at which PM begins
     constexpr int HALF_DAY = 12; // Defines the number of hours in half a day.
@@ -193,6 +197,18 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 break;
             case 'z':
                 // TODO : UTC offset
+                offset = hh_mm_ss{clock.getUtcOffset()};
+                if (offset.is_negative())
+                {
+                    formattedDate += '-';
+                }
+                else
+                {
+                    formattedDate += '+';
+                }
+                formattedDate += format("{:02}", offset.hours().count());
+                formattedDate += format("{:02}", offset.minutes().count());
+                i++;
                 break;
             case 'Z':
                 formattedDate += clock.getTimeZone();

@@ -36,11 +36,12 @@
 #include "month.hpp"
 
 using duration = std::chrono::system_clock::duration;
+using std::exit;
+using std::string;
+using std::chrono::seconds;
 using std::chrono::current_zone;
 using std::chrono::system_clock;
 using std::chrono::zoned_time;
-using std::exit;
-using std::string;
 
 Clock::Clock() : now(0), time(nullptr), day(Day::Monday), month(Month::January) {}
 
@@ -99,9 +100,22 @@ auto Clock::getDayOfTheWeek() const -> int
     return time->tm_wday;
 }
 
+auto Clock::getDayOfTheYear() const -> int
+{
+    return time->tm_yday;
+}
+
 auto Clock::getTimeZone() const -> string
 {
     return timeZone;
+}
+
+auto Clock::getUtcOffset() const -> seconds
+{
+    zoned_time<duration> zonedTime(current_zone(), system_clock::from_time_t(now));
+    auto info = zonedTime.get_info();
+
+    return info.offset;
 }
 
 void Clock::setTime(timespec* newTime)
