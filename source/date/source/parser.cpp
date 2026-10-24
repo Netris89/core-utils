@@ -196,7 +196,6 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'z':
-                // TODO : UTC offset
                 offset = hh_mm_ss{clock.getUtcOffset()};
                 if (offset.is_negative())
                 {
