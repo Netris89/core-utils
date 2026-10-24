@@ -9,6 +9,8 @@
 using std::string;
 using testing::Return;
 
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
 TEST(ParserFormatTests, DoublePercent)
 {
     MockClock clock;
@@ -22,9 +24,9 @@ TEST(ParserFormatTests, FormatsShortNumericDate)
     MockClock clock;
     string format = "+%d/%m/%y";
 
-    ON_CALL(clock, getDay()).WillByDefault(Return(2));   // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getMonth()).WillByDefault(Return(2)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getYear()).WillByDefault(Return(99)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getDay()).WillByDefault(Return(2));
+    ON_CALL(clock, getMonth()).WillByDefault(Return(2));
+    ON_CALL(clock, getYear()).WillByDefault(Return(99));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "02/02/99\n");
 }
@@ -34,9 +36,9 @@ TEST(ParserFormatTests, LongTimePlaceholder)
     MockClock clock;
     string format = "+%T";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(14)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getMin()).WillByDefault(Return(15));  // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getSec()).WillByDefault(Return(16));  // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(14));
+    ON_CALL(clock, getMin()).WillByDefault(Return(15));
+    ON_CALL(clock, getSec()).WillByDefault(Return(16));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "14:15:16\n");
 }
@@ -46,8 +48,8 @@ TEST(ParserFormatTests, ShortTimePlaceholder)
     MockClock clock;
     string format = "+%R";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(14)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getMin()).WillByDefault(Return(15));  // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(14));
+    ON_CALL(clock, getMin()).WillByDefault(Return(15));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "14:15\n");
 }
@@ -58,13 +60,13 @@ TEST(ParserFormatTests, FullFormat)
     string format = "+%a %b %e %H:%M:%S %Z %Y";
 
     ON_CALL(clock, getDayOfTheWeek()).WillByDefault(Return(4));
-    ON_CALL(clock, getMonth()).WillByDefault(Return(11)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getDay()).WillByDefault(Return(26));   // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getHour()).WillByDefault(Return(19));  // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getMin()).WillByDefault(Return(45));   // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getMonth()).WillByDefault(Return(11));
+    ON_CALL(clock, getDay()).WillByDefault(Return(26));
+    ON_CALL(clock, getHour()).WillByDefault(Return(19));
+    ON_CALL(clock, getMin()).WillByDefault(Return(45));
     ON_CALL(clock, getSec()).WillByDefault(Return(00));
     ON_CALL(clock, getTimeZone()).WillByDefault(Return("MSK"));
-    ON_CALL(clock, getYear()).WillByDefault(Return(1991)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getYear()).WillByDefault(Return(1991));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "Thu Dec 26 19:45:00 MSK 1991\n");
 }
@@ -74,7 +76,7 @@ TEST(ParserFormatTests, FullDay)
     MockClock clock;
     string format = "+%A";
 
-    ON_CALL(clock, getDayOfTheWeek()).WillByDefault(Return(1)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getDayOfTheWeek()).WillByDefault(Return(1));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "Monday\n");
 }
@@ -84,7 +86,7 @@ TEST(ParserFormatTests, FullMonth)
     MockClock clock;
     string format = "+%B";
 
-    ON_CALL(clock, getMonth()).WillByDefault(Return(7)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getMonth()).WillByDefault(Return(7));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "August\n");
 }
@@ -94,9 +96,9 @@ TEST(ParserFormatTests, MixedTextAndFormat)
     MockClock clock;
     string format = "+Now: %Hh %Mmin %Ssec";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(8)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getMin()).WillByDefault(Return(5));  // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getSec()).WillByDefault(Return(30)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(8));
+    ON_CALL(clock, getMin()).WillByDefault(Return(5));
+    ON_CALL(clock, getSec()).WillByDefault(Return(30));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "Now: 08h 05min 30sec\n");
 }
@@ -212,7 +214,7 @@ TEST(ParserFormatTests, Hour12Format) // %I
     MockClock clock;
     string format = "+%I";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(14)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(14));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "02\n");
 }
@@ -222,7 +224,7 @@ TEST(ParserFormatTests, AmIndicator) // %p
     MockClock clock;
     string format = "+%p";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(9)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(9));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "AM\n");
 }
@@ -232,7 +234,7 @@ TEST(ParserFormatTests, PmIndicator) // %p
     MockClock clock;
     string format = "+%p";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(14)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(14));
 
     EXPECT_EQ(Parser::ParseFormat(format, clock), "PM\n");
 }
@@ -262,9 +264,9 @@ TEST(ParserFormatTests, Full12HourTime) // %r, POSIX: equivalent to %I:%M:%S %p
     MockClock clock;
     string format = "+%r";
 
-    ON_CALL(clock, getHour()).WillByDefault(Return(13)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getMin()).WillByDefault(Return(36)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    ON_CALL(clock, getSec()).WillByDefault(Return(32)); // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+    ON_CALL(clock, getHour()).WillByDefault(Return(13));
+    ON_CALL(clock, getMin()).WillByDefault(Return(36));
+    ON_CALL(clock, getSec()).WillByDefault(Return(32));
 
     // same HH:MM output as %R instead of %I:%M:%S %p.
     EXPECT_EQ(Parser::ParseFormat(format, clock), "01:36:32 PM\n");
@@ -299,3 +301,150 @@ TEST(ParserDateTests, InfersTwentiethCenturyForHighTwoDigitYear)
 
     EXPECT_EQ(checked.tm_year, 85); // 1985 - 1900
 }
+
+TEST(ParserFormatTests, DayOfYearFirstDay)
+{
+    MockClock clock;
+    string format = "+%j";
+
+    // tm_yday is 0-based: January 1st is 0
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(0));
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "001\n");
+}
+
+TEST(ParserFormatTests, DayOfYearIsPaddedToThreeDigits)
+{
+    MockClock clock;
+    string format = "+%j";
+
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(4));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "005\n");
+
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(9));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "010\n");
+
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(40));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "041\n");
+}
+
+TEST(ParserFormatTests, DayOfYearAroundTheHundredthDay)
+{
+    MockClock clock;
+    string format = "+%j";
+
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(98));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "099\n");
+
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(99));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "100\n");
+}
+
+TEST(ParserFormatTests, DayOfYearLastDay)
+{
+    MockClock clock;
+    string format = "+%j";
+
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(364));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "365\n");
+
+    // Only exists in a leap year
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(365));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "366\n");
+}
+
+TEST(ParserFormatTests, DayOfYearInsideAFormat)
+{
+    MockClock clock;
+    string format = "+%Y-%j";
+
+    ON_CALL(clock, getYear()).WillByDefault(Return(2026));
+    ON_CALL(clock, getDayOfTheYear()).WillByDefault(Return(294));
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "2026-295\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetInUtc)
+{
+    MockClock clock;
+    string format = "+%z";
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(0));
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "+0000\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetEastOfUtc)
+{
+    MockClock clock;
+    string format = "+%z";
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(60));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "+0100\n");
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(120));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "+0200\n");
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(840));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "+1400\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetWestOfUtc)
+{
+    MockClock clock;
+    string format = "+%z";
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-300));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "-0500\n");
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-720));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "-1200\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetWithMinutesEastOfUtc)
+{
+    MockClock clock;
+    string format = "+%z";
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(330));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "+0530\n");
+
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(345));
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "+0545\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetWithMinutesWestOfUtc)
+{
+    MockClock clock;
+    string format = "+%z";
+
+    // Newfoundland standard time: 3 hours 30 minutes west, the minutes must not be negative
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-210));
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "-0330\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetWestOfUtcByLessThanAnHour)
+{
+    MockClock clock;
+    string format = "+%z";
+
+    // The hours part is zero, so the sign cannot be taken from it
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(-30));
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "-0030\n");
+}
+
+TEST(ParserFormatTests, UtcOffsetInsideAFormat)
+{
+    MockClock clock;
+    string format = "+%H:%M %z";
+
+    ON_CALL(clock, getHour()).WillByDefault(Return(12));
+    ON_CALL(clock, getMin()).WillByDefault(Return(30));
+    ON_CALL(clock, getUtcOffset()).WillByDefault(Return(120));
+
+    EXPECT_EQ(Parser::ParseFormat(format, clock), "12:30 +0200\n");
+}
+
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
