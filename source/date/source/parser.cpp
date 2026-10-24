@@ -103,7 +103,8 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'j':
-                // TODO : Day of the year (001-366)
+                formattedDate += formatThreeDigits(clock.getDayOfTheYear() + 1);
+                i++;
                 break;
             case 'm':
                 formattedDate += formatTwoDigits(clock.getMonth());
@@ -126,7 +127,6 @@ auto Parser::ParseFormat(const string& argument, const ClockInterface& clock) ->
                 i++;
                 break;
             case 'r':
-                // TODO : 12h format (%I:%M:%S %p)
                 tempHour = clock.getHour();
                 if (tempHour > MIDDAY)
                 {
@@ -373,5 +373,12 @@ auto Parser::formatTwoDigits(int value) -> string
 {
     ostringstream oss;
     oss << setw(2) << setfill('0') << value;
+    return oss.str();
+}
+
+auto Parser::formatThreeDigits(int value) -> string
+{
+    ostringstream oss;
+    oss << setw(3) << setfill('0') << value;
     return oss.str();
 }

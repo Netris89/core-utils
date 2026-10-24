@@ -51,6 +51,16 @@ private:
      */
     static auto formatTwoDigits(int value) -> std::string;
 
+    /**
+     * @brief Formats an integer as a three-digit string with leading zeros if necessary.
+     *
+     * @param value The integer value to format.
+     * @return A string representing the integer, padded with leading zeros to ensure at least three digits.
+     *
+     * For example, an input of 5 will return "005", and an input of 23 will return "023".
+     */
+    static auto formatThreeDigits(int value) -> std::string;
+
 public:
     /**
      * @brief Default constructor.
