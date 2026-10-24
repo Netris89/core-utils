@@ -160,8 +160,6 @@ TEST(ParserDateTests, DefaultsToCurrentYearWhenYearNotProvided)
     tm nowTm   = {};
     localtime_r(&now, &nowTm);
 
-    // KNOWN ISSUE: currently fails, year defaults to 0 (tm_year=-1900)
-    // instead of the current year.
     EXPECT_EQ(checked.tm_year, nowTm.tm_year);
 }
 

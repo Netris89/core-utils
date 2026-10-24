@@ -23,6 +23,8 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/date.html
  */
 
+#include <bits/chrono.h>
+#include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
@@ -45,8 +47,12 @@ using std::stoi;
 using std::string;
 using std::to_string;
 using std::unique_ptr;
+using std::chrono::days;
+using std::chrono::floor;
 using std::chrono::hh_mm_ss;
 using std::chrono::seconds;
+using std::chrono::system_clock;
+using std::chrono::year_month_day;
 
 Parser::Parser() = default;
 
@@ -312,6 +318,12 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
         if (yearStr.find_first_not_of("0123456789") != string::npos)
         {
             return nullptr;
+        }
+
+        if (yearStr.empty()) // if the year is empty, we assume the current year
+        {
+            auto currentYear = year_month_day{floor<days>(system_clock::now())}.year();
+            yearStr          = to_string(static_cast<int>(currentYear));
         }
     }
 
