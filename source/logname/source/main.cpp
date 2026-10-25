@@ -21,6 +21,25 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/logname.html
  */
 
+#include <cstdlib>
+#include <iostream>
+#include <string>
+
+#include <unistd.h>
+
+using std::cout;
+using std::string;
+
 auto main() -> int
 {
+    string user = getlogin();
+
+    if (user.empty())
+    {
+        return EXIT_FAILURE;
+    }
+
+    cout << user << '\n';
+
+    return EXIT_SUCCESS;
 }
