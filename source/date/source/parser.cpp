@@ -245,7 +245,6 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     string dayStr;
     string hourStr;
     string minuteStr;
-    string centuryStr;
     string yearStr;
     string secondStr;
     int month                          = 0;
@@ -387,6 +386,9 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     }
 
     localtime.tm_year = year - BASE_YEAR;
+    
+    // Sets isdst to -1 so that mktime determines if the time is dst or not
+    localtime.tm_isdst = -1;
 
     time = mktime(&localtime);
 
