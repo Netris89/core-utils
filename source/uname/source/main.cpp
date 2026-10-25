@@ -3,23 +3,30 @@
  *  License: MIT
  *
  * Description:
- * A minimal implementation of the POSIX tty utility in C++.
- * This program writes to the standard output the name of the terminal that is open as standard input
- * (the name that ttyname() returns, for example /dev/pts/0).
- * If standard input is not a terminal, it writes "not a tty" instead.
- * No input is read from standard input: it is only examined to know whether it is a terminal.
+ * A minimal implementation of the POSIX uname utility in C++.
+ * This program writes information about the system to the standard output, using the symbols
+ * that the uname() function reports. By default, only the operating system name is written.
+ * When options are given, only the selected symbols are written, always in the same order
+ * (system name, node name, release, version, machine) and separated by a single space.
  *
- *  Usage: ./tty
+ *  Usage: ./uname [-amnrsv]
  *
- *  The tty utility takes neither options nor operands.
+ *  Supported options:
+ *      -a      : Behave as though all of the options -mnrsv were specified
+ *      -m      : Write the name of the hardware type on which the system is running
+ *      -n      : Write the name of this node within an implementation-defined communications network
+ *      -r      : Write the current release level of the operating system implementation
+ *      -s      : Write the name of the implementation of the operating system. This is the default.
+ *      -v      : Write the current version level of this release of the operating system implementation
+ *
+ *  The uname utility takes no operands.
  *
  *  Exit status:
- *      0       : Standard input is a terminal, and its name was written
- *      1       : Standard input is not a terminal, and "not a tty" was written
- *      >1      : An error occurred
+ *      0       : The requested information was successfully written
+ *      >0      : An error occurred
  *
  *  Note: More details on options and behavior can be found here:
- *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tty.html
+ *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/uname.html
  */
 
 #include <cstdlib>
