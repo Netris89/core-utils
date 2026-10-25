@@ -43,8 +43,8 @@ using std::vector;
 
 auto main(int argc, char* argv[]) -> int
 {
-    span<char*> args(argv, argc);
-    vector<string> arguments(args.begin() + 1, args.end()); // Vector of arguments from command-line inputs
+    span<char*> args(argv, argc);                           // Wraps the raw argv array in a std::span so it can be sliced without pointer arithmetic
+    vector<string> arguments(args.begin() + 1, args.end()); // Command-line arguments, without the program name (args[0])
     bool isUtc = false;                                     // Indicates that the time should be printed in UTC instead of local time.
     int opt    = 0;                                         // Result of getopt
     Clock clock;                                            // Object for the clock
