@@ -269,6 +269,7 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     constexpr int POINT_POS            = 12;
     constexpr int SECOND_POS           = 13;
     constexpr int DECEMBER             = 12;
+    constexpr int TWO_DIGIT_YEAR_PIVOT = 69; // First two-digit year read as 19yy (1969), anything below it is read as 20yy
     tm localtime                       = {};
     time_t time                        = 0;
     unique_ptr<timespec> convertedTime = make_unique<timespec>();
@@ -317,6 +318,20 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
         if (yearStr.find_first_not_of("0123456789") != string::npos)
         {
             return nullptr;
+        }
+
+        // Only the last two digits of the year were given: infers the century as POSIX requires
+        // (00 to 68 give 2000 to 2068, 69 to 99 give 1969 to 1999)
+        if (yearStr.size() == 2)
+        {
+            if (stoi(yearStr) < TWO_DIGIT_YEAR_PIVOT)
+            {
+                yearStr = "20" + yearStr;
+            }
+            else
+            {
+                yearStr = "19" + yearStr;
+            }
         }
 
         if (yearStr.empty()) // if the year is empty, we assume the current year
@@ -386,7 +401,7 @@ auto Parser::ParseDate(string& argument) -> unique_ptr<timespec>
     }
 
     localtime.tm_year = year - BASE_YEAR;
-    
+
     // Sets isdst to -1 so that mktime determines if the time is dst or not
     localtime.tm_isdst = -1;
 
