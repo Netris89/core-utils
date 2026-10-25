@@ -23,11 +23,33 @@
  */
 
 #include <cstdlib>
+#include <iostream>
+#include <string>
+
 #include <unistd.h>
+
+using std::cout;
+using std::string;
 
 auto main() -> int
 {
-    int fd = 0;
-    ttyname(fd);
+    constexpr int EXIT_NOT_TTY = 2;
+    string name;
+
+    if (isatty(STDIN_FILENO) == 0)
+    {
+        cout << "not a tty" << '\n';
+        return EXIT_NOT_TTY;
+    }
+
+    name = ttyname(STDIN_FILENO);
+
+    if (name.empty())
+    {
+        return EXIT_FAILURE;
+    }
+
+    cout << name << '\n';
+
     return EXIT_SUCCESS;
 }
