@@ -185,6 +185,7 @@ TEST(ParserDateTests, ParsesFullFormatWithYearAndSeconds)
 
 TEST(ParserDateTests, DoesNotCrashWithYearButNoSeconds)
 {
+    // cppcheck-suppress variableScope
     string noSeconds = "100314302026"; // 12 chars: year present, no seconds
 
     EXPECT_NO_THROW({
