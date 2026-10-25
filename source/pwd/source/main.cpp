@@ -3,23 +3,26 @@
  *  License: MIT
  *
  * Description:
- * A minimal implementation of the POSIX tty utility in C++.
- * This program writes to the standard output the name of the terminal that is open as standard input
- * (the name that ttyname() returns, for example /dev/pts/0).
- * If standard input is not a terminal, it writes "not a tty" instead.
- * No input is read from standard input: it is only examined to know whether it is a terminal.
+ * A minimal implementation of the POSIX pwd utility in C++.
+ * This program writes to the standard output an absolute pathname of the current working directory,
+ * which does not contain the filenames dot or dot-dot.
+ * No input is read from standard input.
  *
- *  Usage: ./tty
+ *  Usage: ./pwd [-L|-P]
  *
- *  The tty utility takes neither options nor operands.
+ *  Supported options:
+ *      -L      : If the PWD environment variable is an absolute pathname of the current directory without any dot or dot-dot component,
+ *                write it. Otherwise behave as -P. This is the default.
+ *      -P      : Write a pathname that does not contain any component referring to a symbolic link.
+ *
+ *  If both options are specified, the last one applies.
  *
  *  Exit status:
- *      0       : Standard input is a terminal, and its name was written
- *      1       : Standard input is not a terminal, and "not a tty" was written
- *      >1      : An error occurred
+ *      0       : Successful completion
+ *      >0      : An error occurred. Nothing is written to the standard output in that case
  *
  *  Note: More details on options and behavior can be found here:
- *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tty.html
+ *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pwd.html
  */
 
 #include <cstdlib>
