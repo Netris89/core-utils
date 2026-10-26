@@ -7,3 +7,13 @@ AlignTrailingComments: true
 PointerAlignment: Left
 AccessModifierOffset: -4
 AlignConsecutiveAssignments: true
+
+IncludeBlocks: Regroup
+IncludeIsMainRegex: 'a^'
+IncludeCategories:
+  - Regex: '^<.*\.(h)>$'
+    Priority: 2
+  - Regex: '^<.*>$'
+    Priority: 1
+  - Regex: '^".*"$'
+    Priority: 3
