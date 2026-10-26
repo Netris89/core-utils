@@ -21,23 +21,40 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/logname.html
  */
 
+#include <array>
+#include <climits> // IWYU pragma: keep
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <string>
 
 #include <unistd.h>
 
+using std::array;
+using std::cerr;
 using std::cout;
+using std::strerror;
 using std::string;
 
 auto main() -> int
 {
-    string user = getlogin();
+    array<char, LOGIN_NAME_MAX> buffer{}; // Receives the login name. getlogin_r writes into it, so no pointer owned by the C library is involved
+    string user;                          // The login name as a std::string, built only once getlogin_r has succeeded
 
-    if (user.empty())
+    // Unlike getlogin(), it does not return a pointer that may be null: it returns 0 on success
+    // or an error number (for example when the process has no controlling terminal)
+    int error = getlogin_r(buffer.data(), buffer.size());
+
+    // POSIX requires a diagnostic message on the standard error and a non-zero exit status.
+    // Nothing is written to the standard output in that case
+    if (error != 0)
     {
+        cerr << "logname : " << strerror(error) << '\n';
         return EXIT_FAILURE;
     }
+
+    // On success the buffer holds a null-terminated string, so it can be converted safely
+    user = buffer.data();
 
     cout << user << '\n';
 
