@@ -22,34 +22,45 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tty.html
  */
 
+#include <array>
+#include <climits> // IWYU pragma: keep
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
-#include <string>
 
 #include <unistd.h>
 
+using std::array;
+using std::cerr;
 using std::cout;
-using std::string;
+using std::strerror;
 
 auto main() -> int
 {
-    constexpr int EXIT_NOT_TTY = 2;
-    string name;
+    constexpr int EXIT_NOT_TTY = 1;           // POSIX: 1 when standard input is not a terminal, above 1 for an error.
+    constexpr int EXIT_ERROR   = 2;           // EXIT_FAILURE is 1, so it cannot be used for errors here
+    array<char, TTY_NAME_MAX> terminalName{}; // Receives the terminal name written by ttyname_r(). TTY_NAME_MAX is the maximum length of a terminal device name
+    int error = 0;                            // Result of ttyname_r(): 0 on success, otherwise an error number
 
+    // Standard input is only examined, never read. isatty() returns 0 when the file descriptor does not refer to
+    // a terminal, and also when it is invalid (for example a closed standard input)
     if (isatty(STDIN_FILENO) == 0)
     {
         cout << "not a tty" << '\n';
         return EXIT_NOT_TTY;
     }
 
-    name = ttyname(STDIN_FILENO);
+    // Only called once isatty() has confirmed that standard input is a terminal, because ttyname_r() fails otherwise
+    error = ttyname_r(STDIN_FILENO, terminalName.data(), terminalName.size());
 
-    if (name.empty())
+    // Standard input is a terminal but its name cannot be obtained: a real error, not the "not a tty" case
+    if (error != 0)
     {
-        return EXIT_FAILURE;
+        cerr << "tty: " << strerror(error) << '\n';
+        return EXIT_ERROR;
     }
 
-    cout << name << '\n';
+    cout << terminalName.data() << '\n';
 
     return EXIT_SUCCESS;
 }
