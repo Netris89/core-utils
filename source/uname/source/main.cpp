@@ -32,34 +32,78 @@
 #include <cstdlib>
 #include <iostream>
 #include <ranges>
-
-#include <span>
 #include <string>
+
+#include <getopt.h>
 #include <sys/utsname.h>
 #include <unistd.h>
-#include <vector>
 
+using std::cerr;
 using std::cout;
-using std::span;
 using std::string;
-using std::vector;
 using std::ranges::data;
 
 auto main(int argc, char* argv[]) -> int
 {
-    span<char*> args(argv, argc);                           // Wraps the raw argv array in a std::span so it can be sliced without pointer arithmetic
-    vector<string> arguments(args.begin() + 1, args.end()); // Command-line arguments, without the program name (args[0])
-    const char* sysname = nullptr;                          // Pointer to the first character of the system name
-    utsname info{};                                         // Structure that will hold the system information returned by uname()
+    string sysname;                                         // Stores the system name and selected system information fields.
+    utsname info{};                                         // Stores the system information returned by uname().
+    int opt = 0;                                            // Stores the option returned by getopt().
 
     if (uname(&info) == -1)
     {
         return EXIT_FAILURE;
     }
 
-    // Obtain a pointer to the first element of the sysname character array.
-    // This avoids an implicit array-to-pointer conversion at the call site
-    sysname = data(info.sysname);
+    while ((opt = getopt(argc, argv, "amnrsv")) != -1)
+    {
+        switch (opt)
+        {
+        case 'a':
+            sysname = data(info.sysname);
+            sysname += ' ';
+            sysname += data(info.nodename);
+            sysname += ' ';
+            sysname += data(info.release);
+            sysname += ' ';
+            sysname += data(info.version);
+            sysname += ' ';
+            sysname += data(info.machine);
+            break;
+        case 'm':
+            sysname += data(info.machine);
+            break;
+        case 'n':
+            sysname += data(info.nodename);
+            break;
+        case 'r':
+            sysname += data(info.release);
+            break;
+        case 's':
+            sysname += data(info.sysname);
+            break;
+        case 'v':
+            sysname += data(info.version);
+            break;
+        case '?':
+            cerr << "uname: invalid option -- '" << static_cast<char>(optopt) << "'\n";
+            return EXIT_FAILURE;
+        default:
+            sysname = data(info.sysname);
+            break;
+        }
+    }
+
+    // The uname utility does not accept operands
+    if (optind < argc)
+    {
+        cerr << "uname: operands are not supported" << '\n';
+        return EXIT_FAILURE;
+    }
+
+    if (sysname.empty())
+    {
+        sysname = data(info.sysname);
+    }
 
     cout << sysname << '\n';
 
