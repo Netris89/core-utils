@@ -29,15 +29,17 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/uname.html
  */
 
+#include <array>
+#include <cstddef>
 #include <cstdlib>
 #include <iostream>
 #include <ranges>
 #include <string>
 
-#include <getopt.h>
 #include <sys/utsname.h>
 #include <unistd.h>
 
+using std::array;
 using std::cerr;
 using std::cout;
 using std::string;
@@ -45,13 +47,36 @@ using std::ranges::data;
 
 auto main(int argc, char* argv[]) -> int
 {
-    string sysname;                                         // Stores the system name and selected system information fields.
-    utsname info{};                                         // Stores the system information returned by uname().
-    int opt = 0;                                            // Stores the option returned by getopt().
+    string sysinfo;                           // Stores the system name and selected system information fields
+    utsname info{};                           // Stores the system information returned by uname()
+    int opt                         = 0;      // Stores the option returned by getopt()
+    bool sysname                    = false;  // Determines if system name is added to the printed sysinfo
+    bool nodename                   = false;  // Determines if the node name is added to the printed sysinfo
+    bool release                    = false;  // Determines if the release is added to the printed sysinfo
+    bool version                    = false;  // Determines if the version is added to the printed sysinfo
+    bool machine                    = false;  // Determines if the machine is added to the printed sysinfo
+    constexpr size_t OPTION_COUNT   = 5;      // Number of supported uname options
+    constexpr size_t SYS_INFO_COUNT = 5;      // Number of system information fields returned by uname()
+    array<bool, OPTION_COUNT> options{};      // Array containing the different options to print
+    array<string, SYS_INFO_COUNT> sysinfos{}; // Array containing the different system info
 
     if (uname(&info) == -1)
     {
+        cerr << "uname: failed to retrieve system information" << '\n';
         return EXIT_FAILURE;
+    }
+
+    sysinfos = {
+        data(info.sysname),
+        data(info.nodename),
+        data(info.release),
+        data(info.version),
+        data(info.machine),
+    };
+
+    if (argc == 1)
+    {
+        sysname = true;
     }
 
     while ((opt = getopt(argc, argv, "amnrsv")) != -1)
@@ -59,37 +84,54 @@ auto main(int argc, char* argv[]) -> int
         switch (opt)
         {
         case 'a':
-            sysname = data(info.sysname);
-            sysname += ' ';
-            sysname += data(info.nodename);
-            sysname += ' ';
-            sysname += data(info.release);
-            sysname += ' ';
-            sysname += data(info.version);
-            sysname += ' ';
-            sysname += data(info.machine);
+            sysname  = true;
+            nodename = true;
+            release  = true;
+            version  = true;
+            machine  = true;
             break;
         case 'm':
-            sysname += data(info.machine);
+            machine = true;
             break;
         case 'n':
-            sysname += data(info.nodename);
+            nodename = true;
             break;
         case 'r':
-            sysname += data(info.release);
+            release = true;
             break;
         case 's':
-            sysname += data(info.sysname);
+            sysname = true;
             break;
         case 'v':
-            sysname += data(info.version);
+            version = true;
             break;
         case '?':
             cerr << "uname: invalid option -- '" << static_cast<char>(optopt) << "'\n";
             return EXIT_FAILURE;
         default:
-            sysname = data(info.sysname);
+            sysname = true;
             break;
+        }
+    }
+
+    options = {
+        sysname,
+        nodename,
+        release,
+        version,
+        machine,
+    };
+
+    for (size_t i = 0; i < options.size(); i++)
+    {
+        if (options.at(i))
+        {
+            sysinfo += sysinfos.at(i);
+
+            if (i < options.size() - 1)
+            {
+                sysinfo += ' ';
+            }
         }
     }
 
@@ -100,12 +142,7 @@ auto main(int argc, char* argv[]) -> int
         return EXIT_FAILURE;
     }
 
-    if (sysname.empty())
-    {
-        sysname = data(info.sysname);
-    }
-
-    cout << sysname << '\n';
+    cout << sysinfo << '\n';
 
     return EXIT_SUCCESS;
 }
