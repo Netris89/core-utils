@@ -47,18 +47,17 @@ using std::ranges::data;
 
 auto main(int argc, char* argv[]) -> int
 {
-    string sysinfo;                           // Stores the system name and selected system information fields
-    utsname info{};                           // Stores the system information returned by uname()
-    int opt                         = 0;      // Stores the option returned by getopt()
-    bool sysname                    = false;  // Determines if system name is added to the printed sysinfo
-    bool nodename                   = false;  // Determines if the node name is added to the printed sysinfo
-    bool release                    = false;  // Determines if the release is added to the printed sysinfo
-    bool version                    = false;  // Determines if the version is added to the printed sysinfo
-    bool machine                    = false;  // Determines if the machine is added to the printed sysinfo
-    constexpr size_t OPTION_COUNT   = 5;      // Number of supported uname options
-    constexpr size_t SYS_INFO_COUNT = 5;      // Number of system information fields returned by uname()
-    array<bool, OPTION_COUNT> options{};      // Array containing the different options to print
-    array<string, SYS_INFO_COUNT> sysinfos{}; // Array containing the different system info
+    string sysinfo;                         // Stores the system name and selected system information fields
+    utsname info{};                         // Stores the system information returned by uname()
+    int opt                       = 0;      // Stores the option returned by getopt()
+    bool sysname                  = false;  // Determines if system name is added to the printed sysinfo
+    bool nodename                 = false;  // Determines if the node name is added to the printed sysinfo
+    bool release                  = false;  // Determines if the release is added to the printed sysinfo
+    bool version                  = false;  // Determines if the version is added to the printed sysinfo
+    bool machine                  = false;  // Determines if the machine is added to the printed sysinfo
+    constexpr size_t SYMBOL_COUNT = 5;      // Number of symbols that can be selected: system name, node name, release, version, machine
+    array<bool, SYMBOL_COUNT> options{};    // Array containing the different options to print
+    array<string, SYMBOL_COUNT> sysinfos{}; // Array containing the different system info
 
     if (uname(&info) == -1)
     {
@@ -66,6 +65,8 @@ auto main(int argc, char* argv[]) -> int
         return EXIT_FAILURE;
     }
 
+    // Same order as the flags in options below and as the POSIX output: system name, node name, release, version, machine.
+    // The index of a flag is the index of the symbol it selects
     sysinfos = {
         data(info.sysname),
         data(info.nodename),
@@ -74,11 +75,7 @@ auto main(int argc, char* argv[]) -> int
         data(info.machine),
     };
 
-    if (argc == 1)
-    {
-        sysname = true;
-    }
-
+    // The options only select symbols, nothing is written yet: the output order is fixed by POSIX and does not depend on the order of the options
     while ((opt = getopt(argc, argv, "amnrsv")) != -1)
     {
         switch (opt)
@@ -106,14 +103,17 @@ auto main(int argc, char* argv[]) -> int
             version = true;
             break;
         case '?':
-            cerr << "uname: invalid option -- '" << static_cast<char>(optopt) << "'\n";
             return EXIT_FAILURE;
-        default:
-            sysname = true;
-            break;
         }
     }
 
+    // POSIX: without any option, uname behaves as if -s had been specified. This also covers "uname --"
+    if (!sysname && !nodename && !release && !version && !machine)
+    {
+        sysname = true;
+    }
+
+    // Same order as sysinfos: the index of a flag is the index of the symbol it selects
     options = {
         sysname,
         nodename,
@@ -122,20 +122,21 @@ auto main(int argc, char* argv[]) -> int
         machine,
     };
 
+    // Builds the line from the selected symbols, in the fixed POSIX order, separated by a single space and with none after the last one
     for (size_t i = 0; i < options.size(); i++)
     {
         if (options.at(i))
         {
-            sysinfo += sysinfos.at(i);
-
-            if (i < options.size() - 1)
+            if (!sysinfo.empty())
             {
                 sysinfo += ' ';
             }
+
+            sysinfo += sysinfos.at(i);
         }
     }
 
-    // The uname utility does not accept operands
+    // POSIX: uname takes no operands. optind is the index of the first argument that is not an option
     if (optind < argc)
     {
         cerr << "uname: operands are not supported" << '\n';
