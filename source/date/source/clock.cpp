@@ -38,8 +38,8 @@
 using duration = std::chrono::system_clock::duration;
 using std::exit;
 using std::string;
-using std::chrono::seconds;
 using std::chrono::current_zone;
+using std::chrono::seconds;
 using std::chrono::system_clock;
 using std::chrono::zoned_time;
 

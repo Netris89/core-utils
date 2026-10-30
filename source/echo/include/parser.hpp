@@ -28,10 +28,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include <cstddef>
 #include <string>
+#include <vector>
 
 /**
  * @class Parser

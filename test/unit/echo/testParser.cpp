@@ -1,6 +1,7 @@
-#include <gtest/gtest.h>
 #include <string>
 #include <vector>
+
+#include <gtest/gtest.h>
 
 #include "parser.hpp"
 
@@ -94,7 +95,6 @@ TEST(ParserTests, InvalidEscape)
     EXPECT_EQ(Parser::ParseArgument("\\q"), "\\q");
     EXPECT_EQ(Parser::ParseArgument("a\\ b"), "a\\ b");
 }
-
 
 TEST(ParserTests, BackslashSequence)
 {
