@@ -30,8 +30,6 @@
 #include <string>
 #include <vector>
 
-#include <getopt.h>
-
 #include "clock.hpp"
 #include "parser.hpp"
 

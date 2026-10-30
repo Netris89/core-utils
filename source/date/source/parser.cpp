@@ -23,7 +23,6 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/date.html
  */
 
-#include <bits/chrono.h>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
@@ -32,6 +31,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+
+#include <bits/chrono.h>
 
 #include "day.hpp"
 #include "month.hpp"
