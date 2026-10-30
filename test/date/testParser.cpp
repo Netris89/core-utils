@@ -1,6 +1,6 @@
 #include <string>
 
-#include "gmock/gmock.h"
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "mockClock.hpp"

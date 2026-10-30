@@ -1,8 +1,9 @@
 #pragma once
 
-#include "gmock/gmock.h"
 #include <chrono>
 #include <string>
+
+#include <gmock/gmock.h>
 
 #include "clockInterface.hpp"
 
