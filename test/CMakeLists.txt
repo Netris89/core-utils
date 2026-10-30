@@ -7,8 +7,8 @@ endif()
 
 include(GoogleTest)
 
-add_executable(dateTestParser date/testParser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/parser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/clock.cpp)
-add_executable(echoTestParser echo/testParser.cpp ${PROJECT_SOURCE_DIR}/source/echo/source/parser.cpp)
+add_executable(dateTestParser unit/date/testParser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/parser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/clock.cpp)
+add_executable(echoTestParser unit/echo/testParser.cpp ${PROJECT_SOURCE_DIR}/source/echo/source/parser.cpp)
 
 target_include_directories(dateTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/date/include)
 target_include_directories(echoTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/echo/include)
