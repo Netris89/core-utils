@@ -9,12 +9,15 @@ include(GoogleTest)
 
 add_executable(dateTestParser unit/date/testParser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/parser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/clock.cpp)
 add_executable(echoTestParser unit/echo/testParser.cpp ${PROJECT_SOURCE_DIR}/source/echo/source/parser.cpp)
+add_executable(trueIntegrationTest integration/true/trueIntegrationTest.cpp)
 
 target_include_directories(dateTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/date/include)
 target_include_directories(echoTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/echo/include)
 
 target_link_libraries(dateTestParser PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 target_link_libraries(echoTestParser PRIVATE GTest::gtest GTest::gtest_main)
+target_link_libraries(trueIntegrationTest PRIVATE GTest::gtest_main)
 
 gtest_discover_tests(dateTestParser)
 gtest_discover_tests(echoTestParser)
+gtest_discover_tests(trueIntegrationTest)
