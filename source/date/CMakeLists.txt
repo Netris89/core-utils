@@ -16,27 +16,3 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Create the executable target for your main program
 add_executable(date ${SOURCES})
-
-# Find the GoogleTest package (required for tests)
-find_package(GTest REQUIRED)
-
-# Create the test executable for parser tests
-add_executable(dateTestParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
-
-# Add parser.cpp, clock.cpp & clockInterface.hpp directly to the test executable
-target_sources(dateTestParser PRIVATE
-    ${PROJECT_SOURCE_DIR}/source/parser.cpp
-    ${PROJECT_SOURCE_DIR}/source/clock.cpp
-    ${PROJECT_SOURCE_DIR}/include/clockInterface.hpp
-)
-
-# Link the test executable with GoogleTest libraries
-target_link_libraries(dateTestParser PRIVATE
-    GTest::gtest
-    GTest::gtest_main
-    GTest::gmock
-    GTest::gmock_main
-)
-
-# Automatically discover tests from the test executable (requires gtest_main)
-gtest_discover_tests(dateTestParser)

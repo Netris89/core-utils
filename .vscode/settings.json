@@ -1,0 +1,6 @@
+{
+    "cmake.configureArgs": [
+        "-DBUILD_TESTING=ON",
+        "-DENABLE_COVERAGE=ON"
+    ]
+}

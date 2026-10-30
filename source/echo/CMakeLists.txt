@@ -16,18 +16,3 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Create the executable target for the main program using the gathered source files
 add_executable(echo ${SOURCES})
-
-# Find the GoogleTest package (required for tests)
-find_package(GTest REQUIRED)
-
-# Create the test executable for parser tests
-add_executable(echoTestParser "${PROJECT_SOURCE_DIR}/test/testParser.cpp")
-
-# Add parser.cpp directly to the test executable
-target_sources(echoTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/parser.cpp)
-
-# Link the test executable with GoogleTest libraries
-target_link_libraries(echoTestParser PRIVATE GTest::gtest GTest::gtest_main)
-
-# Automatically discover tests from the test executable (requires gtest_main)
-gtest_discover_tests(echoTestParser)
