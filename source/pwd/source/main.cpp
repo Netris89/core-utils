@@ -25,10 +25,31 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pwd.html
  */
 
+#include <cerrno>
 #include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <memory>
+
 #include <unistd.h>
+
+using std::cerr;
+using std::cout;
+using std::free;
+using std::unique_ptr;
 
 auto main() -> int
 {
+    // TODO : getcwd(nullptr, 0) is a GNU extension. POSIX requires a caller-provided buffer.
+    unique_ptr<char, decltype(&free)> cwd(getcwd(nullptr, 0), &free);
+
+    if (cwd == nullptr)
+    {
+        cerr << "pwd : " << strerror(errno);
+        return EXIT_FAILURE;
+    }
+
+    cout << cwd.get() << '\n';
+
     return EXIT_SUCCESS;
 }
