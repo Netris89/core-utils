@@ -18,16 +18,41 @@ This project is a C++ implementation of classic UNIX utilities, designed to adhe
 - Easy to build and extend.
 
 # Build Instructions
+
 > [!IMPORTANT]
-> Requirements: CMake 3.10+, a C++20-compliant compiler (e.g., GCC 10+, Clang 9+).
+> Requirements: CMake 3.13+ and a C++20 compiler whose standard library provides `<format>` and the time zone support that `date` needs: GCC 13+, or Clang using the libstdc++ of GCC 13+.
+
 ```sh
 git clone https://github.com/Netris89/core-utils
 cd core-utils
-mkdir build
-cd build
-cmake ..
-cmake --build .
+cmake -B build
+cmake --build build
 ```
->[!TIP]
-> All executables will be generated inside build/bin/.
-> For example, you can run ./build/bin/echo to use the echo utility.
+
+The programs are written in `build/bin`, for example `./build/bin/echo hello`.
+
+## Tests (optional)
+
+The unit tests need [GoogleTest](https://github.com/google/googletest) and CMake 3.20+. They are not built by default.
+
+```sh
+cmake -B build -DBUILD_TESTING=ON
+cmake --build build
+ctest --test-dir build
+```
+
+If GoogleTest is installed with [vcpkg](https://github.com/microsoft/vcpkg), set the `VCPKG_ROOT` environment variable and CMake uses it automatically. Otherwise, point `CMAKE_PREFIX_PATH` to the folder where GoogleTest is installed.
+
+## Code coverage (optional)
+
+Coverage uses `llvm-cov`, so it needs Clang. It is not enabled by default.
+
+```sh
+cmake -B build -DCMAKE_CXX_COMPILER=clang++ -DENABLE_COVERAGE=ON
+```
+
+## Undefined behavior detection (optional)
+
+```sh
+cmake -B build -DENABLE_SANITIZERS=ON
+```
