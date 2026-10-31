@@ -26,30 +26,44 @@
  */
 
 #include <cerrno>
+#include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <memory>
+#include <vector>
 
 #include <unistd.h>
 
 using std::cerr;
 using std::cout;
-using std::free;
-using std::unique_ptr;
+using std::vector;
 
 auto main() -> int
 {
-    // TODO : getcwd(nullptr, 0) is a GNU extension. POSIX requires a caller-provided buffer.
-    unique_ptr<char, decltype(&free)> cwd(getcwd(nullptr, 0), &free);
+    constexpr size_t INITIAL_BUFFER_SIZE = 256;
 
-    if (cwd == nullptr)
+    size_t size = INITIAL_BUFFER_SIZE; // Current buffer size in bytes
+    vector<char> buffer(size);         // Buffer used to store the absolute pathname
+
+    // Retry with a larger buffer if the current one is too small
+    while (getcwd(buffer.data(), buffer.size()) == nullptr)
     {
-        cerr << "pwd : " << strerror(errno);
-        return EXIT_FAILURE;
+        // Prevent size_t overflow when doubling the buffer size
+        if (errno == ERANGE && size <= SIZE_MAX / 2)
+        {
+            size = size * 2;
+            buffer.resize(size);
+        }
+        else
+        {
+            cerr << "pwd : " << strerror(errno) << '\n';
+            return EXIT_FAILURE;
+        }
     }
 
-    cout << cwd.get() << '\n';
+    // Write the absolute pathname to standard output
+    cout << buffer.data() << '\n';
 
     return EXIT_SUCCESS;
 }
