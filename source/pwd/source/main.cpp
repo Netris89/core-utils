@@ -31,12 +31,16 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <new>
+#include <stdexcept>
 #include <vector>
 
 #include <unistd.h>
 
+using std::bad_alloc;
 using std::cerr;
 using std::cout;
+using std::length_error;
 using std::vector;
 
 auto main() -> int
@@ -53,7 +57,21 @@ auto main() -> int
         if (errno == ERANGE && size <= SIZE_MAX / 2)
         {
             size = size * 2;
-            buffer.resize(size);
+
+            try
+            {
+                buffer.resize(size);
+            }
+            catch (const bad_alloc& error)
+            {
+                cerr << "pwd : " << error.what() << '\n';
+                return EXIT_FAILURE;
+            }
+            catch (const length_error& error)
+            {
+                cerr << "pwd : " << error.what() << '\n';
+                return EXIT_FAILURE;
+            }
         }
         else
         {
