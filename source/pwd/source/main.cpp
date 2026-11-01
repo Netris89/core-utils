@@ -83,5 +83,13 @@ auto main() -> int
     // Write the absolute pathname to standard output
     cout << buffer.data() << '\n';
 
+    // Flush stdout to detect write errors before exiting
+    cout.flush();
+    if (!cout)
+    {
+        cerr << "pwd : write error" << '\n';
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
 }
