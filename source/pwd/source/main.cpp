@@ -32,18 +32,17 @@
 #include <cstring>
 #include <iostream>
 #include <new>
-#include <span>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include <sys/stat.h>
 #include <unistd.h>
 
 using std::bad_alloc;
 using std::cerr;
 using std::cout;
 using std::length_error;
-using std::span;
 using std::string;
 using std::vector;
 
@@ -51,27 +50,27 @@ auto main(int argc, char* argv[]) -> int
 {
     constexpr size_t INITIAL_BUFFER_SIZE = 256;
 
-    span<char*> args(argv, argc);                           // Wraps the raw argv array in a std::span so it can be sliced without pointer arithmetic
-    vector<string> arguments(args.begin() + 1, args.end()); // Command-line arguments, without the program name (args[0])
-    int opt     = 0;                                        // Stores the option returned by getopt()
-    size_t size = INITIAL_BUFFER_SIZE;                      // Current buffer size in bytes
-    vector<char> buffer(size);                              // Buffer used to store the absolute pathname
+    int opt     = 0;                   // Stores the option returned by getopt()
+    size_t size = INITIAL_BUFFER_SIZE; // Current buffer size in bytes
+    vector<char> buffer(size);         // Buffer used to store the absolute pathname
+    string env;                        // Value of the PWD environment variable
+    string pathname;                   // Absolute pathname of the current working directory
+    bool logicalMode = true;           // Determines whether logical or physical path resolution is used
+    struct stat currentStat{};         // Metadata of the current working directory
+    struct stat pwdStat{};             // Metadata of the directory referenced by PWD
 
-    // if there are more than 3 arguments, prints the usage and terminates the program
-    if (arguments.size() > 1)
-    {
-        cerr << "Usage : ./pwd [-LP]" << '\n';
-        return EXIT_FAILURE;
-    }
+    // TODO : Reduce cognitive complexity
 
-    // Check if getop returns -1. If it does, handle the option
+    // Parse command-line options. The last option takes precedence
     while ((opt = getopt(argc, argv, "LP")) != -1)
     {
         switch (opt)
         {
-        case 'L':
+        case 'L': // Default
+            logicalMode = true;
             break;
         case 'P':
+            logicalMode = false;
             break;
         default:
             cerr << "Invalid option. Try -L or -P." << '\n';
@@ -79,38 +78,70 @@ auto main(int argc, char* argv[]) -> int
         }
     }
 
-    // Retry with a larger buffer if the current one is too small
-    while (getcwd(buffer.data(), buffer.size()) == nullptr)
+    if (optind < argc)
     {
-        // Prevent size_t overflow when doubling the buffer size
-        if (errno == ERANGE && size <= SIZE_MAX / 2)
-        {
-            size = size * 2;
-
-            try
-            {
-                buffer.resize(size);
-            }
-            catch (const bad_alloc& error)
-            {
-                cerr << "pwd : " << error.what() << '\n';
-                return EXIT_FAILURE;
-            }
-            catch (const length_error& error)
-            {
-                cerr << "pwd : " << error.what() << '\n';
-                return EXIT_FAILURE;
-            }
-        }
-        else
-        {
-            cerr << "pwd : " << strerror(errno) << '\n';
-            return EXIT_FAILURE;
-        }
+        cerr << "pwd : Unexpected operand" << '\n';
+        return EXIT_FAILURE;
     }
 
-    // Write the absolute pathname to standard output
-    cout << buffer.data() << '\n';
+    if (logicalMode)
+    {
+        // Use PWD only if it identifies the current working directory
+        env = getenv("PWD");
+
+        if (env.empty())
+        {
+            logicalMode = false;
+        }
+
+        // Compare device and inode numbers to verify that both paths identify the same directory
+        if ((stat(env.c_str(), &pwdStat) != -1) && (stat(".", &currentStat) != -1))
+        {
+            // stat() follows symbolic links, which is required for logical mode
+            if (pwdStat.st_dev == currentStat.st_dev && pwdStat.st_ino == currentStat.st_ino)
+            {
+                pathname = env;
+            }
+        }
+    }
+    else
+    {
+        // Retry with a larger buffer if the current one is too small
+        while (getcwd(buffer.data(), buffer.size()) == nullptr)
+        {
+            // Prevent size_t overflow when doubling the buffer size
+            if (errno == ERANGE && size <= SIZE_MAX / 2)
+            {
+                size = size * 2;
+
+                try
+                {
+                    buffer.resize(size);
+                }
+                catch (const bad_alloc& error)
+                {
+                    cerr << "pwd : " << error.what() << '\n';
+                    return EXIT_FAILURE;
+                }
+                catch (const length_error& error)
+                {
+                    cerr << "pwd : " << error.what() << '\n';
+                    return EXIT_FAILURE;
+                }
+            }
+            else
+            {
+                cerr << "pwd : " << strerror(errno) << '\n';
+                return EXIT_FAILURE;
+            }
+        }
+
+        // Store the resolved physical pathname
+        pathname = buffer.data();
+    }
+
+    // Write the pathname to standard output
+    cout << pathname << '\n';
 
     // Flush stdout to detect write errors before exiting
     cout.flush();
