@@ -29,12 +29,10 @@ jobs:
 
     - name: Build with CMake
       run: |
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
-        cmake --build .
+        cmake -S . -B build \
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake \
+          -DBUILD_TESTING=ON
+        cmake --build build --parallel
 
     - name: Run tests
-      run: |
-        cd build
-        ctest --output-on-failure
+      run: ctest --test-dir build --output-on-failure
