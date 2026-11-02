@@ -32,15 +32,15 @@ if(ENABLE_COVERAGE)
     add_link_options(-fprofile-instr-generate)
 endif()
 
-add_subdirectory(source/date)
-add_subdirectory(source/echo)
-add_subdirectory(source/false)
-add_subdirectory(source/logname)
-add_subdirectory(source/pwd)
-add_subdirectory(source/sleep)
-add_subdirectory(source/true)
-add_subdirectory(source/tty)
-add_subdirectory(source/uname)
+file(GLOB UTILITIES CONFIGURE_DEPENDS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*
+)
+
+foreach(UTILITY ${UTILITIES})
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/${UTILITY}")
+        add_subdirectory(src/${UTILITY})
+    endif()
+endforeach()
 
 if(BUILD_TESTING)
     add_subdirectory(test)
