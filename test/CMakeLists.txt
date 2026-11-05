@@ -1,20 +1,54 @@
+# Find GoogleTest, which is required to build and run the tests.
 find_package(GTest QUIET)
 
 if(NOT GTest_FOUND)
-    message(FATAL_ERROR "The unit tests need GoogleTest (for example installed with vcpkg or with your package manager). "
-                        "Install it, or configure without -DBUILD_TESTING=ON")
+    message(FATAL_ERROR
+        "The tests need GoogleTest (for example installed with vcpkg or your package manager). "
+        "Install it, or configure without -DBUILD_TESTING=ON."
+    )
 endif()
 
+# Load GoogleTest's CMake integration and enable CTest.
 include(GoogleTest)
+enable_testing()
 
-add_executable(dateTestParser date/testParser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/parser.cpp ${PROJECT_SOURCE_DIR}/source/date/source/clock.cpp)
-add_executable(echoTestParser echo/testParser.cpp ${PROJECT_SOURCE_DIR}/source/echo/source/parser.cpp)
+# Create a unit test executable and register its tests with CTest.
+function(add_unit_test TEST_NAME)
+    add_executable(${TEST_NAME} ${ARGN})
 
-target_include_directories(dateTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/date/include)
-target_include_directories(echoTestParser PRIVATE ${PROJECT_SOURCE_DIR}/source/echo/include)
+    target_link_libraries(${TEST_NAME}
+        PRIVATE
+            GTest::gtest
+            GTest::gtest_main
+    )
 
-target_link_libraries(dateTestParser PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
-target_link_libraries(echoTestParser PRIVATE GTest::gtest GTest::gtest_main)
+    gtest_discover_tests(${TEST_NAME})
+endfunction()
 
-gtest_discover_tests(dateTestParser)
-gtest_discover_tests(echoTestParser)
+# Create an integration test executable and register its tests with CTest.
+function(add_integration_test TEST_NAME)
+    add_executable(${TEST_NAME} ${ARGN})
+
+    target_link_libraries(${TEST_NAME}
+        PRIVATE
+            GTest::gtest_main
+    )
+
+    gtest_discover_tests(${TEST_NAME}
+        PROPERTIES
+            WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+    )
+endfunction()
+
+# Automatically discover and include all utility test directories.
+foreach(TEST_TYPE unit integration)
+    file(GLOB TESTS CONFIGURE_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/${TEST_TYPE}/*"
+    )
+
+    foreach(TEST ${TESTS})
+        if(IS_DIRECTORY "${TEST}" AND EXISTS "${TEST}/CMakeLists.txt")
+            add_subdirectory("${TEST}")
+        endif()
+    endforeach()
+endforeach()
