@@ -32,13 +32,13 @@ if(ENABLE_COVERAGE)
     add_link_options(-fprofile-instr-generate)
 endif()
 
-file(GLOB UTILITIES CONFIGURE_DEPENDS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*
+file(GLOB UTILITIES CONFIGURE_DEPENDS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/source
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/*
 )
 
 foreach(UTILITY ${UTILITIES})
-    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/${UTILITY}")
-        add_subdirectory(src/${UTILITY})
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/source/${UTILITY}")
+        add_subdirectory(source/${UTILITY})
     endif()
 endforeach()
 
