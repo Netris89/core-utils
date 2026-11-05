@@ -25,41 +25,28 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pwd.html
  */
 
-#include <cerrno>
-#include <cstddef>
-#include <cstdint>
 #include <cstdlib>
-#include <cstring>
 #include <iostream>
-#include <new>
-#include <stdexcept>
 #include <string>
-#include <vector>
 
 #include <sys/stat.h>
 #include <unistd.h>
 
-using std::bad_alloc;
+#include "pathResolver.hpp"
+
 using std::cerr;
 using std::cout;
-using std::length_error;
 using std::string;
-using std::vector;
 
 auto main(int argc, char* argv[]) -> int
 {
-    constexpr size_t INITIAL_BUFFER_SIZE = 256;
+    int opt = 0;     // Stores the option returned by getopt()
+    string pathname; // Absolute pathname of the current working directory
 
-    int opt     = 0;                   // Stores the option returned by getopt()
-    size_t size = INITIAL_BUFFER_SIZE; // Current buffer size in bytes
-    vector<char> buffer(size);         // Buffer used to store the absolute pathname
-    string env;                        // Value of the PWD environment variable
-    string pathname;                   // Absolute pathname of the current working directory
-    bool logicalMode = true;           // Determines whether logical or physical path resolution is used
-    struct stat currentStat{};         // Metadata of the current working directory
-    struct stat pwdStat{};             // Metadata of the directory referenced by PWD
-
-    // TODO : Reduce cognitive complexity
+    if (argc < 2)
+    {
+        pathname = PathResolver::getLogicalPath();
+    }
 
     // Parse command-line options. The last option takes precedence
     while ((opt = getopt(argc, argv, "LP")) != -1)
@@ -67,10 +54,14 @@ auto main(int argc, char* argv[]) -> int
         switch (opt)
         {
         case 'L': // Default
-            logicalMode = true;
+            pathname = PathResolver::getLogicalPath();
+            if (pathname.empty())
+            {
+                pathname = PathResolver::getPhysicalPath();
+            }
             break;
         case 'P':
-            logicalMode = false;
+            pathname = PathResolver::getPhysicalPath();
             break;
         default:
             cerr << "Invalid option. Try -L or -P." << '\n';
@@ -82,62 +73,6 @@ auto main(int argc, char* argv[]) -> int
     {
         cerr << "pwd : Unexpected operand" << '\n';
         return EXIT_FAILURE;
-    }
-
-    if (logicalMode)
-    {
-        // Use PWD only if it identifies the current working directory
-        env = getenv("PWD");
-
-        if (env.empty())
-        {
-            logicalMode = false;
-        }
-
-        // Compare device and inode numbers to verify that both paths identify the same directory
-        if ((stat(env.c_str(), &pwdStat) != -1) && (stat(".", &currentStat) != -1))
-        {
-            // stat() follows symbolic links, which is required for logical mode
-            if (pwdStat.st_dev == currentStat.st_dev && pwdStat.st_ino == currentStat.st_ino)
-            {
-                pathname = env;
-            }
-        }
-    }
-    else
-    {
-        // Retry with a larger buffer if the current one is too small
-        while (getcwd(buffer.data(), buffer.size()) == nullptr)
-        {
-            // Prevent size_t overflow when doubling the buffer size
-            if (errno == ERANGE && size <= SIZE_MAX / 2)
-            {
-                size = size * 2;
-
-                try
-                {
-                    buffer.resize(size);
-                }
-                catch (const bad_alloc& error)
-                {
-                    cerr << "pwd : " << error.what() << '\n';
-                    return EXIT_FAILURE;
-                }
-                catch (const length_error& error)
-                {
-                    cerr << "pwd : " << error.what() << '\n';
-                    return EXIT_FAILURE;
-                }
-            }
-            else
-            {
-                cerr << "pwd : " << strerror(errno) << '\n';
-                return EXIT_FAILURE;
-            }
-        }
-
-        // Store the resolved physical pathname
-        pathname = buffer.data();
     }
 
     // Write the pathname to standard output

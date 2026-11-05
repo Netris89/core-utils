@@ -5,4 +5,8 @@ project(pwd)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(pwd ${PROJECT_SOURCE_DIR}/source/main.cpp)
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/source/*.cpp")
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+add_executable(pwd ${SOURCES})
