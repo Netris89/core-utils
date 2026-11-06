@@ -25,12 +25,7 @@
  *  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pwd.html
  */
 
-#include <cerrno>
 #include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <memory>
-
 #include <iostream>
 #include <string>
 
@@ -39,8 +34,6 @@
 
 using std::cerr;
 using std::cout;
-using std::free;
-using std::unique_ptr;
 
 #include "pathResolver.hpp"
 
